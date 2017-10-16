@@ -21,8 +21,8 @@ public class App extends Application {
         x.Ext.init(this);
     }
 
-    private static DbManager.DaoConfig daoConfig = new DbManager.DaoConfig()
-            .setDbName("sign_record.db")
+    static DbManager.DaoConfig daoConfig = new DbManager.DaoConfig()
+            .setDbName("fs_record.db")
             .setDbDir(new File(Environment.getExternalStorageDirectory().getPath()))
             .setDbVersion(1)
             .setDbOpenListener(new DbManager.DbOpenListener() {
