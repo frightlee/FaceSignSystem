@@ -1,25 +1,47 @@
 package facesign.adplayer.fanhong.fs_sys.utils;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2017/10/16.
  */
 
 public class CameraInfo {
-    private String IP="";
-    private String Port="";
-    private String User="";
-    private String Pwd="";
-    private int Login=-1;
-    private int Alarm=-1;
+    private long No_ = -1;
+    private String Alias = "";
+    private String IP = "";
+    private String Port = "";
+    private String User = "";
+    private String Pwd = "";
+    private int Login = -1;
+    private int Alarm = -1;
 
     public CameraInfo() {
     }
 
-    public CameraInfo(String IP, String port, String user, String pwd) {
+    public CameraInfo(long no_, String alias, String IP, String port, String user, String pwd) {
+        No_ = no_;
+        Alias = alias;
         this.IP = IP;
         Port = port;
         User = user;
         Pwd = pwd;
+    }
+
+    public long getNo_() {
+        return No_;
+    }
+
+    public void setNo_(long no_) {
+        No_ = no_;
+    }
+
+    public String getAlias() {
+        return Alias;
+    }
+
+    public void setAlias(String alias) {
+        Alias = alias;
     }
 
     public String getIP() {
