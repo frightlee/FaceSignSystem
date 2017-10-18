@@ -1,4 +1,4 @@
-package facesign.adplayer.fanhong.fs_sys.utils;
+package facesign.adplayer.fanhong.fs_sys.models;
 
 /**
  * Created by Administrator on 2017/10/16.

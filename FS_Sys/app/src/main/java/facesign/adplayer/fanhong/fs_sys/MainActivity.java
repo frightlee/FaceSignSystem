@@ -1,8 +1,5 @@
 package facesign.adplayer.fanhong.fs_sys;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -11,15 +8,17 @@ import android.view.WindowManager;
 
 import com.hikvision.netsdk.HCNetSDK;
 
+import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import facesign.adplayer.fanhong.fs_sys.utils.CameraInfo;
+import facesign.adplayer.fanhong.fs_sys.models.CameraInfo;
 import jna.HCNetSDKJNAInstance;
 
+@ContentView(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivityLog";
     private static final String SP_NAME = "f_s_setting";
@@ -31,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private List<CameraInfo> cameras = new ArrayList<>();
     private int hcLogin = -1;//登录注册设备ID
     private int hcalarm = -1;//报警布防号码
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,5 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 hcalarm = -1;
             } else
                 Log.e(TAG, "撤防失败");
+    }
+    private void setList(){
+
     }
 }

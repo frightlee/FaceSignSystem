@@ -28,6 +28,7 @@ public class App extends Application {
             .setDbOpenListener(new DbManager.DbOpenListener() {
                 @Override
                 public void onDbOpened(DbManager db) {
+                    // 开启WAL, 对写入加速提升巨大
                     db.getDatabase().enableWriteAheadLogging();
                 }
             })

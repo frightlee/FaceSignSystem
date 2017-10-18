@@ -1,4 +1,4 @@
-package facesign.adplayer.fanhong.fs_sys.utils;
+package facesign.adplayer.fanhong.fs_sys.models;
 
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;
@@ -10,6 +10,10 @@ import org.xutils.db.annotation.Table;
 public class SignInfo {
     @Column(name = "id", isId = true, autoGen = true, property = "NOT NULL")
     private int id;
+//    @Column(name = "s_bumen")
+//    private String bumen;
+//    @Column(name = "s_zhiwei")
+//    private String zhiwei;
     @Column(name = "s_name")
     private String name;
     @Column(name = "s_uid") //身份证号
@@ -37,6 +41,22 @@ public class SignInfo {
         this.time = time;
         this.status = status;
     }
+
+//    public String getBumen() {
+//        return bumen;
+//    }
+//
+//    public void setBumen(String bumen) {
+//        this.bumen = bumen;
+//    }
+//
+//    public String getZhiwei() {
+//        return zhiwei;
+//    }
+//
+//    public void setZhiwei(String zhiwei) {
+//        this.zhiwei = zhiwei;
+//    }
 
     public int getId() {
         return id;
