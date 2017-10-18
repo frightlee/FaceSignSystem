@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="248.4px"
-    android:background="@color/gray2"
-    android:paddingLeft="37px">
+    android:layout_width="match_parent"
+    android:layout_height="672.84px"
+    android:background="@color/back_blue">
 
     <com.zhy.autolayout.AutoRelativeLayout
-        android:layout_width="345.6px"
-        android:layout_height="172.8px"
+        android:layout_width="1036.8px"
+        android:layout_height="594px"
+        android:layout_centerInParent="true"
         android:background="@color/white"
-        android:gravity="center"
-        android:layout_centerVertical="true">
+        android:gravity="center">
 
         <ImageView
             android:id="@+id/img_head"
-            android:layout_width="71.65px"
-            android:layout_height="97.2px"
+            android:layout_width="326.4px"
+            android:layout_height="442.8px"
             android:layout_centerVertical="true"
             android:src="@mipmap/liantong" />
 
@@ -23,8 +22,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_margin="50px"
             android:layout_toRightOf="@id/img_head"
-            android:layout_marginLeft="16px"
             android:orientation="vertical">
 
             <TextView
@@ -33,34 +32,42 @@
                 android:layout_height="wrap_content"
                 android:text="姓名：徐强"
                 android:textColor="@color/black"
-                android:textSize="14px" />
+                android:textSize="40px" />
 
             <TextView
                 android:id="@+id/tv_department"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2px"
+                android:layout_marginTop="20px"
                 android:text="部门：技术部"
                 android:textColor="@color/black"
-                android:textSize="14px" />
+                android:textSize="40px" />
 
             <TextView
                 android:id="@+id/tv_position"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2px"
+                android:layout_marginTop="20px"
                 android:text="职位：android程序员"
                 android:textColor="@color/black"
-                android:textSize="14px" />
+                android:textSize="40px" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20px"
+                android:text="摄像机：A1"
+                android:textColor="@color/black"
+                android:textSize="40px" />
 
             <TextView
                 android:id="@+id/tv_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2px"
-                android:text="签到时间：2017/10/19　08:23:52"
+                android:layout_marginTop="20px"
+                android:text="签到时间：2017/10/19\n　　　　　08:23:52"
                 android:textColor="@color/black"
-                android:textSize="14px" />
+                android:textSize="40px" />
         </com.zhy.autolayout.AutoLinearLayout>
     </com.zhy.autolayout.AutoRelativeLayout>
 </com.zhy.autolayout.AutoRelativeLayout>
