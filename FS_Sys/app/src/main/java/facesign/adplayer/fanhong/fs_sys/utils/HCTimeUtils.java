@@ -1,10 +1,15 @@
 package facesign.adplayer.fanhong.fs_sys.utils;
 
+import java.util.Calendar;
+
+import facesign.adplayer.fanhong.fs_sys.models.SignInfo;
+
 /**
  * Created by Administrator on 2017/9/29.
  */
 
 public class HCTimeUtils {
+    // 500*************        1185094728
     public static String getTimeStr(int time) {
         String timeStr = "";
         int year = (((time) >> 26) + 2000);
@@ -32,7 +37,15 @@ public class HCTimeUtils {
             return (((time) >> 0) & 63);
         return -1;
     }
-
+    public static String getWeek(int year,int month,int day) {
+        String[] weekDays = {"星期日", "星期一", "星期二", "星期三" ,"星期四", "星期五", "星期六"};
+        Calendar c = Calendar.getInstance();
+        c.set(year, month-1, day);
+        int w = c.get(Calendar.DAY_OF_WEEK) - 1;
+        if (w < 0)
+            w = 0;
+        return weekDays[w];
+    }
 //    public static int getStatus(int time,int start){
 //        int year=getDateTime(time,"year"),
 //            month=getDateTime(time,"month"),

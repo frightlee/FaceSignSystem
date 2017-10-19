@@ -1,4 +1,4 @@
-package facesign.adplayer.fanhong.fs_sys.utils;
+package facesign.adplayer.fanhong.fs_sys.models;
 
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;
@@ -10,9 +10,13 @@ import org.xutils.db.annotation.Table;
 public class SignInfo {
     @Column(name = "id", isId = true, autoGen = true, property = "NOT NULL")
     private int id;
+//    @Column(name = "s_bumen")
+//    private String bumen;
+//    @Column(name = "s_zhiwei")
+//    private String zhiwei;
     @Column(name = "s_name")
     private String name;
-    @Column(name = "s_uid")
+    @Column(name = "s_uid") //身份证号
     private String uid;
     @Column(name = "s_year")
     private int year;
@@ -22,7 +26,7 @@ public class SignInfo {
     private int day;
     @Column(name = "s_time")
     private String time;
-    @Column(name = "s_status")
+    @Column(name = "s_status")  //1：一天的第一次打卡  2：其他次数为下班打卡（每次更新时间）
     private int status;
 
     public SignInfo() {
@@ -37,6 +41,22 @@ public class SignInfo {
         this.time = time;
         this.status = status;
     }
+
+//    public String getBumen() {
+//        return bumen;
+//    }
+//
+//    public void setBumen(String bumen) {
+//        this.bumen = bumen;
+//    }
+//
+//    public String getZhiwei() {
+//        return zhiwei;
+//    }
+//
+//    public void setZhiwei(String zhiwei) {
+//        this.zhiwei = zhiwei;
+//    }
 
     public int getId() {
         return id;

@@ -6,12 +6,10 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.Display;
@@ -40,11 +38,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import facesign.adplayer.fanhong.fs_sys.adapers.SignCardAdapter;
+import facesign.adplayer.fanhong.fs_sys.models.CameraInfo;
 import facesign.adplayer.fanhong.fs_sys.utils.CameraCardAdapter;
-import facesign.adplayer.fanhong.fs_sys.utils.CameraInfo;
-import facesign.adplayer.fanhong.fs_sys.utils.DBUtils;
 import facesign.adplayer.fanhong.fs_sys.utils.HCTimeUtils;
-import facesign.adplayer.fanhong.fs_sys.utils.SignCardAdapter;
 import jna.HCNetSDKByJNA;
 import jna.HCNetSDKJNAInstance;
 

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.zip.Inflater;
 
 import facesign.adplayer.fanhong.fs_sys.R;
+import facesign.adplayer.fanhong.fs_sys.models.CameraInfo;
 
 /**
  * Created by Administrator on 2017/10/18.
