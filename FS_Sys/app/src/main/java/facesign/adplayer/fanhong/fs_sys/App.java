@@ -15,6 +15,9 @@ import java.io.File;
  */
 
 public class App extends Application {
+    private static final String SP_NAME = "f_s_setting";
+    public static String superPwd = "2234";
+
     @Override
     public void onCreate() {
         super.onCreate();

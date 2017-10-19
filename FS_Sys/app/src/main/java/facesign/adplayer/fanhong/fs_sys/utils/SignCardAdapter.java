@@ -34,18 +34,31 @@ public class SignCardAdapter extends RecyclerView.Adapter<SignCardAdapter.ViewHo
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return position == 0 ? 0 : 1;
+    }
+
+    @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.sign_card, parent, false);
+        View view;
+        if (viewType == 0) {
+            view = inflater.inflate(R.layout.sign_card_last, parent, false);
+        } else {
+            view = inflater.inflate(R.layout.sign_card, parent, false);
+        }
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.imgHead.setImageBitmap(list.get(position).blackPic);
-        holder.tvName.setText("姓名：" + list.get(position).name);
-        holder.tvSimilar.setText("匹配率：" + list.get(position).similar);
-        holder.tvTime.setText("签到时间：" + list.get(position).time);
+        SignCard info = list.get(position);
+        holder.imgHead.setImageBitmap(info.blackPic);
+        holder.tvName.setText("姓名：" + info.name);
+        holder.tvDepartment.setText("部门：" + info.department);
+        holder.tvPosition.setText("职位：" + info.position);
+        holder.tvCamera.setText("摄像机：" + info.camera);
+        holder.tvTime.setText("签到时间：" + info.time);
     }
 
     @Override
@@ -58,8 +71,12 @@ public class SignCardAdapter extends RecyclerView.Adapter<SignCardAdapter.ViewHo
         ImageView imgHead;
         @ViewInject(R.id.tv_name)
         TextView tvName;
-        @ViewInject(R.id.tv_similar)
-        TextView tvSimilar;
+        @ViewInject(R.id.tv_department)
+        TextView tvDepartment;
+        @ViewInject(R.id.tv_position)
+        TextView tvPosition;
+        @ViewInject(R.id.tv_camera)
+        TextView tvCamera;
         @ViewInject(R.id.tv_time)
         TextView tvTime;
 
@@ -73,14 +90,21 @@ public class SignCardAdapter extends RecyclerView.Adapter<SignCardAdapter.ViewHo
     public static class SignCard {
         Bitmap blackPic;
         String name;
-        String similar;
+        String department;
+        String position;
+        String camera;
         String time;
 
-        public SignCard(Bitmap blackPic, String name, String similar, String time) {
+        public SignCard(Bitmap blackPic, String name, String department, String position, String camera, String time) {
             this.blackPic = blackPic;
             this.name = name;
-            this.similar = similar;
+            this.department = department;
+            this.position = position;
+            this.camera = camera;
             this.time = time;
+        }
+
+        public SignCard() {
         }
     }
 }

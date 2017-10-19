@@ -103,4 +103,13 @@ public class CameraInfo {
                 ", Alarm=" + Alarm +
                 '}';
     }
+
+    public static String findNameByNo_(List<CameraInfo> cameras, long devNo_) {
+        for (CameraInfo c :
+                cameras) {
+            if (c.getNo_() == devNo_)
+                return c.getAlias();
+        }
+        return "";
+    }
 }
