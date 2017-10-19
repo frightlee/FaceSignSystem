@@ -106,5 +106,17 @@ public class SignCardAdapter extends RecyclerView.Adapter<SignCardAdapter.ViewHo
 
         public SignCard() {
         }
+
+        @Override
+        public String toString() {
+            return "SignCard{" +
+                    "blackPic=" + blackPic +
+                    ", name='" + name + '\'' +
+                    ", department='" + department + '\'' +
+                    ", position='" + position + '\'' +
+                    ", camera='" + camera + '\'' +
+                    ", time='" + time + '\'' +
+                    '}';
+        }
     }
 }

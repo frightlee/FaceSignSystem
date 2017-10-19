@@ -22,6 +22,7 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import facesign.adplayer.fanhong.fs_sys.DbTables.InputWorkers;
+import facesign.adplayer.fanhong.fs_sys.DbTables.OutputRecord;
 
 @ContentView(R.layout.activity_ctrl)
 public class CtrlActivity extends AppCompatActivity {
@@ -55,9 +56,10 @@ public class CtrlActivity extends AppCompatActivity {
     private void init() {
         mSharedPref = getApplicationContext().getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE);
     }
-    @Event({R.id.load_in_workers,R.id.set_in_time,R.id.set_out_time,R.id.remove_camera,R.id.load_out_messages,R.id.change_password})
-    private void onClick(View v){
-        switch (v.getId()){
+
+    @Event({R.id.load_in_workers, R.id.set_in_time, R.id.set_out_time, R.id.remove_camera, R.id.load_out_messages, R.id.change_password})
+    private void onClick(View v) {
+        switch (v.getId()) {
             case R.id.load_in_workers:
                 loadInworkers(CtrlActivity.this);
                 break;
@@ -65,34 +67,38 @@ public class CtrlActivity extends AppCompatActivity {
                 setIntime(CtrlActivity.this);
                 break;
             case R.id.set_out_time:
+                setOuttime(CtrlActivity.this);
                 break;
             case R.id.remove_camera:
                 break;
             case R.id.load_out_messages:
+                OutputRecord or = new OutputRecord();
+                or.writeExcel(or.getListOfOutputExcel());
                 break;
             case R.id.change_password:
+                changeSuperPwd();
                 break;
         }
     }
 
-    public void loadInworkers(final Context context){
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("导入员工信息");
-        builder.setMessage("请将命名为‘workers.xls’的Excel表放入主目录的‘inputFS’的文件夹下");
-        builder.setPositiveButton("文件已确认，下一步", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                int length = InputWorkers.readExcel();
-                if(length>0){
-                    Toast.makeText(context, "导入成功!", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(context, "导入失败，请重试！", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+    public void loadInworkers(final Context context) {
+        new AlertDialog.Builder(context).setTitle("导入员工信息")
+                .setMessage("请将命名为‘workers.xls’的Excel表放入主目录的‘inputFS’的文件夹下")
+                .setPositiveButton("文件已确认，下一步", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int length = InputWorkers.readExcel();
+                        if (length > 0) {
+                            Toast.makeText(context, "导入成功!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "导入失败，请重试！", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).show();
     }
+
     public void setIntime(final Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_set_time, null);
         builder.setView(view);
@@ -112,15 +118,18 @@ public class CtrlActivity extends AppCompatActivity {
                     if (hour > 23 || hour < 0 || minute > 59 || minute < 0) {
                         Toast.makeText(context, "请设定正确的时间", Toast.LENGTH_SHORT).show();
                     } else {
-                        mSharedPref.edit().putString(App.IN_ITME,hour+"_"+minute).commit();
-                        Log.i("xq","commit intime==>success");
+                        mSharedPref.edit().putString(App.IN_ITME, hour + "_" + minute).commit();
+                        Log.i("xq", "commit intime==>success");
+                        builder.create().dismiss();
                     }
                 }
             }
         });
+        builder.show();
     }
+
     public void setOuttime(final Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_set_time, null);
         builder.setView(view);
@@ -140,11 +149,30 @@ public class CtrlActivity extends AppCompatActivity {
                     if (hour > 23 || hour < 0 || minute > 59 || minute < 0) {
                         Toast.makeText(context, "请设定正确的时间", Toast.LENGTH_SHORT).show();
                     } else {
-                        mSharedPref.edit().putString(App.OUT_TIME,hour+"_"+minute).commit();
-                        Log.i("xq","commit intime==>success");
+                        mSharedPref.edit().putString(App.OUT_TIME, hour + "_" + minute).commit();
+                        Log.i("xq", "commit outtime==>success");
+                        builder.create().dismiss();
                     }
                 }
             }
         });
+        builder.show();
+    }
+
+    private void changeSuperPwd() {
+        final EditText edt = new EditText(this);
+        new AlertDialog.Builder(this).setTitle("更改管理员密码").setView(edt).setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newPwd = edt.getText().toString().trim();
+                SharedPreferences.Editor editor = mSharedPref.edit();
+                editor.putString("superPwd", newPwd);
+                if (editor.commit()) {
+                    App.superPwd = newPwd;
+                    new AlertDialog.Builder(CtrlActivity.this).setMessage("设置成功！").show();
+                } else
+                    new AlertDialog.Builder(CtrlActivity.this).setMessage("设置失败！").show();
+            }
+        }).setNegativeButton("取消", null).show();
     }
 }

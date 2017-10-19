@@ -40,15 +40,15 @@ public class InputWorkers {
                 int i = 2;
                 while (true) {
                     // 获取每一行的单元格
-                    cells[0] = sheet.getCell(1, i);// （列，行）
-                    cells[1] = sheet.getCell(2, i);
-                    cells[2] = sheet.getCell(3, i);
-                    cells[3] = sheet.getCell(4, i);
+                    cells[0] = sheet.getCell(0, i);// （列，行）
+                    cells[1] = sheet.getCell(1, i);
+                    cells[2] = sheet.getCell(2, i);
+                    cells[3] = sheet.getCell(3, i);
                     InputWorkersModel model = new InputWorkersModel();
                     model.setDepartment(cells[0].getContents());
                     model.setPosition(cells[1].getContents());
-                    model.setName(cells[2].getContents());
-                    model.setCardNumber(cells[3].getContents());
+                    model.setCardNumber(cells[2].getContents());
+                    model.setName(cells[3].getContents());
                     list.add(model);
                     if (cells[0].getContents().equals("")) {
                         break;
@@ -68,6 +68,11 @@ public class InputWorkers {
     }
 
     public static int setChildOfWorkers(List<InputWorkersModel> lists){
+        try {
+            App.db.dropTable(ChildOfWorkersTable.class);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
         for(int i=0;i<lists.size();i++){
             ChildOfWorkersTable cow = new ChildOfWorkersTable();
             cow.setDepartment(lists.get(i).getDepartment());
@@ -83,9 +88,14 @@ public class InputWorkers {
         try {
 //            List<ChildOfWorkersTable> workersList = App.db.selector(ChildOfWorkersTable.class).where("w_name","=","湛洋").findAll();
             List<ChildOfWorkersTable> workersList = App.db.selector(ChildOfWorkersTable.class).findAll();
-            Log.i("xq","找到==>"+workersList.toString());
-            if(workersList.size() > 0){
-                return workersList.size();
+            if(workersList!=null){
+                Log.i("xq","找到==>"+workersList.toString());
+                if(workersList.size() > 0){
+                    return workersList.size();
+                }
+                else {
+                    Log.i("xq","数据库表中未查询到任何数据");
+                }
             }
         } catch (DbException e) {
             e.printStackTrace();
