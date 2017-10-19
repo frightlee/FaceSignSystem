@@ -9,12 +9,13 @@
     <com.zhy.autolayout.AutoRelativeLayout
         android:id="@+id/layout_left"
         android:layout_width="220px"
+        android:visibility="gone"
         android:layout_height="match_parent">
 
         <ListView
             android:id="@+id/lv_cameras"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
         <com.zhy.autolayout.AutoRelativeLayout
             android:layout_width="match_parent"
@@ -87,11 +88,12 @@
 
         <Button
             android:id="@+id/btn_more"
-            android:layout_width="100px"
+            android:layout_width="70px"
             android:layout_height="100px"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:alpha="0.35"
-            android:background="@mipmap/jiantou" />
+            android:backgroundTint="@color/black"
+            android:alpha="0.45"
+            android:background="@mipmap/right" />
     </com.zhy.autolayout.AutoRelativeLayout>
 </com.zhy.autolayout.AutoLinearLayout>

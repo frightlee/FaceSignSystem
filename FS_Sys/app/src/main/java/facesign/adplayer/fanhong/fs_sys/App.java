@@ -20,6 +20,7 @@ public class App extends Application {
     public static final String SP_NAME = "f_s_setting"; //sharedprefrences名字
     public static final String IN_ITME = "in_time";  //上班时间字段名
     public static final String OUT_TIME = "out_time"; //下班时间字段名
+    public static String superPwd = "2234";
     @Override
     public void onCreate() {
         super.onCreate();
