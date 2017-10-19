@@ -24,14 +24,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import facesign.adplayer.fanhong.fs_sys.utils.CameraInfo;
+import facesign.adplayer.fanhong.fs_sys.models.CameraInfo;
 import jna.HCNetSDKByJNA;
 import jna.HCNetSDKJNAInstance;
 
 @ContentView(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivityLog";
-    private static final String SP_NAME = "f_s_setting";
 
     @ViewInject(R.id.rcv_sign)
     private RecyclerView recyclerView1;

@@ -1,6 +1,7 @@
 package facesign.adplayer.fanhong.fs_sys;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.Log;
 
@@ -15,6 +16,10 @@ import java.io.File;
  */
 
 public class App extends Application {
+    public static final String[] RESULTS = {"正常上班","迟到","早退","正常下班"};
+    public static final String SP_NAME = "f_s_setting"; //sharedprefrences名字
+    public static final String IN_ITME = "in_time";  //上班时间字段名
+    public static final String OUT_TIME = "out_time"; //下班时间字段名
     @Override
     public void onCreate() {
         super.onCreate();

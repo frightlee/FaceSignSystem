@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">人脸打卡考勤系统</string>
     <string name="system_name">重庆凡鸿通信技术有限公司考勤系统</string>
+
+    <string name="load_workers">导入员工信息</string>
+    <string name="set_intime">设定上班时间</string>
+    <string name="set_outtime">设定下班时间</string>
+    <string name="remove_camera">删除摄像头</string>
+    <string name="output_messages">导出考勤记录</string>
+    <string name="change_password">更改管理员密码</string>
 </resources>

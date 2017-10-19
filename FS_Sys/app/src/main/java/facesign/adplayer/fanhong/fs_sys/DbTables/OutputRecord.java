@@ -15,6 +15,7 @@ import facesign.adplayer.fanhong.fs_sys.App;
 import facesign.adplayer.fanhong.fs_sys.models.InputWorkersModel;
 import facesign.adplayer.fanhong.fs_sys.models.OutputExcelModel;
 import facesign.adplayer.fanhong.fs_sys.utils.FileUtils;
+import facesign.adplayer.fanhong.fs_sys.utils.HCTimeUtils;
 import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
@@ -28,6 +29,7 @@ import jxl.write.biff.RowsExceededException;
 
 public class OutputRecord {
 
+    //得到导出model的集合List
     public List<OutputExcelModel> getListOfOutputExcel(){
         List<OutputExcelModel> list = new ArrayList<>();
         try {
@@ -42,7 +44,7 @@ public class OutputRecord {
                 model.setCardNumber(grtList.get(i).getCardNumber());
                 model.setDate(grtList.get(i).getYear()+"/"+grtList.get(i).getMonth()+"/"+grtList.get(i).getDay());
                 model.setTime(grtList.get(i).getTime());
-                model.setWeekday("星期"+grtList.get(i).getWeek());
+                model.setWeekday(HCTimeUtils.getWeek(grtList.get(i).getYear(),grtList.get(i).getMonth(),grtList.get(i).getDay()));
                 model.setResult(grtList.get(i).getResult());
                 list.add(model);
             }

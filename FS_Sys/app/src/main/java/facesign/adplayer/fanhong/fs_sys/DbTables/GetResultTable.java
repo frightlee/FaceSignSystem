@@ -21,21 +21,23 @@ public class GetResultTable {
     int day;
     @Column(name = "m_time")
     String time;
-    @Column(name = "m_week")    // "星期几"
-    String week;
+//    @Column(name = "m_week")    // "星期几"
+//    String week;
     @Column(name = "m_status")//打卡状态，上班为1，下班为2
     int status;
     @Column(name = "m_result")
     String result;
-    public GetResultTable(){}
+    public GetResultTable(){
 
-    public GetResultTable(String cardNumber, int year, int month, int day, String time, String week) {
+    }
+
+    public GetResultTable(String cardNumber, int year, int month, int day, String time/*, String week*/) {
         this.cardNumber = cardNumber;
         this.year = year;
         this.month = month;
         this.day = day;
         this.time = time;
-        this.week = week;
+//        this.week = week;
         //status,result由判断得出
     }
 
@@ -95,13 +97,13 @@ public class GetResultTable {
         this.status = status;
     }
 
-    public String getWeek() {
-        return week;
-    }
-
-    public void setWeek(String week) {
-        this.week = week;
-    }
+//    public String getWeek() {
+//        return week;
+//    }
+//
+//    public void setWeek(String week) {
+//        this.week = week;
+//    }
 
     public String getTime() {
         return time;
@@ -120,7 +122,7 @@ public class GetResultTable {
                 ", month=" + month +
                 ", day=" + day +
                 ", time='" + time + '\'' +
-                ", week=" + week +
+//                ", week=" + week +
                 ", status=" + status +
                 ", result='" + result + '\'' +
                 '}';
