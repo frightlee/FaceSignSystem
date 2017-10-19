@@ -75,14 +75,19 @@ public class CtrlActivity extends AppCompatActivity {
         }
     }
 
-    public void loadInworkers(Context context){
+    public void loadInworkers(final Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("导入员工信息");
         builder.setMessage("请将命名为‘workers.xls’的Excel表放入主目录的‘inputFS’的文件夹下");
         builder.setPositiveButton("文件已确认，下一步", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                InputWorkers.readExcel();
+                int length = InputWorkers.readExcel();
+                if(length>0){
+                    Toast.makeText(context, "导入成功!", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(context, "导入失败，请重试！", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

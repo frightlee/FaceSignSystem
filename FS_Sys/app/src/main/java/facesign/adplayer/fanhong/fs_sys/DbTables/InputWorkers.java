@@ -24,7 +24,7 @@ import jxl.read.biff.BiffException;
 
 public class InputWorkers {
     //录入表格中的数据
-    public static void readExcel() {
+    public static int readExcel() {
         List<InputWorkersModel> list = new ArrayList<>();
         Workbook book = null;
         Sheet sheet = null;
@@ -64,10 +64,10 @@ public class InputWorkers {
                 e.printStackTrace();
             }
         }
-        setChildOfWorkers(list);
+        return setChildOfWorkers(list);
     }
 
-    public static void setChildOfWorkers(List<InputWorkersModel> lists){
+    public static int setChildOfWorkers(List<InputWorkersModel> lists){
         for(int i=0;i<lists.size();i++){
             ChildOfWorkersTable cow = new ChildOfWorkersTable();
             cow.setDepartment(lists.get(i).getDepartment());
@@ -84,8 +84,12 @@ public class InputWorkers {
 //            List<ChildOfWorkersTable> workersList = App.db.selector(ChildOfWorkersTable.class).where("w_name","=","湛洋").findAll();
             List<ChildOfWorkersTable> workersList = App.db.selector(ChildOfWorkersTable.class).findAll();
             Log.i("xq","找到==>"+workersList.toString());
+            if(workersList.size() > 0){
+                return workersList.size();
+            }
         } catch (DbException e) {
             e.printStackTrace();
         }
+        return 0;
     }
 }
