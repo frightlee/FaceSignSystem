@@ -40,10 +40,10 @@ public class InputWorkers {
                 int i = 2;
                 while (true) {
                     // 获取每一行的单元格
-                    cells[0] = sheet.getCell(1, i);// （列，行）
-                    cells[1] = sheet.getCell(2, i);
-                    cells[2] = sheet.getCell(3, i);
-                    cells[3] = sheet.getCell(4, i);
+                    cells[0] = sheet.getCell(0, i);// （列，行）
+                    cells[1] = sheet.getCell(1, i);
+                    cells[2] = sheet.getCell(2, i);
+                    cells[3] = sheet.getCell(3, i);
                     InputWorkersModel model = new InputWorkersModel();
                     model.setDepartment(cells[0].getContents());
                     model.setPosition(cells[1].getContents());
@@ -68,6 +68,11 @@ public class InputWorkers {
     }
 
     public static int setChildOfWorkers(List<InputWorkersModel> lists){
+        try {
+            App.db.dropTable(ChildOfWorkersTable.class);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
         for(int i=0;i<lists.size();i++){
             ChildOfWorkersTable cow = new ChildOfWorkersTable();
             cow.setDepartment(lists.get(i).getDepartment());

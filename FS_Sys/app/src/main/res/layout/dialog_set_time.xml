@@ -25,10 +25,13 @@
             android:layout_height="50dp"
             android:inputType="number"
             android:maxLength="2"
+            android:background="@drawable/edt_biankuang"
             android:singleLine="true"/>
         <TextView
+            android:id="@+id/hour_year"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_margin="3dp"
             android:text="时"
             android:gravity="center_vertical"
             android:textSize="20sp"/>
@@ -38,11 +41,14 @@
             android:layout_height="50dp"
             android:inputType="number"
             android:maxLength="2"
+            android:background="@drawable/edt_biankuang"
             android:singleLine="true"/>
         <TextView
+            android:id="@+id/minute_month"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="分"
+            android:layout_margin="3dp"
             android:gravity="center_vertical"
             android:textSize="20sp"/>
     </LinearLayout>
