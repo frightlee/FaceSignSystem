@@ -24,14 +24,14 @@ import jxl.read.biff.BiffException;
 
 public class InputWorkers {
     //录入表格中的数据
-    public void readExcel() {
+    public static void readExcel() {
         List<InputWorkersModel> list = new ArrayList<>();
         Workbook book = null;
         Sheet sheet = null;
         Cell[] cells = new Cell[4];
         String stringPath = Environment.getExternalStorageDirectory() + "//inputFS";
         if(FileUtils.isFileExists(stringPath)){
-            String stringPath1 = stringPath + "/" + "test1.xls";
+            String stringPath1 = stringPath + "/" + "workers.xls";
             File file = new File(stringPath1);
             try {
                 book = Workbook.getWorkbook(file);
@@ -66,7 +66,8 @@ public class InputWorkers {
         }
         setChildOfWorkers(list);
     }
-    public void setChildOfWorkers(List<InputWorkersModel> lists){
+
+    public static void setChildOfWorkers(List<InputWorkersModel> lists){
         for(int i=0;i<lists.size();i++){
             ChildOfWorkersTable cow = new ChildOfWorkersTable();
             cow.setDepartment(lists.get(i).getDepartment());
