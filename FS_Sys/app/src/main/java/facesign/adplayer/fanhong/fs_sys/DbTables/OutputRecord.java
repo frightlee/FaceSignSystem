@@ -28,23 +28,33 @@ import jxl.write.biff.RowsExceededException;
  */
 
 public class OutputRecord {
+    int whichYear;
+    int whichMonth;
+
+    public OutputRecord(int whichYear, int whichMonth) {
+        this.whichYear = whichYear;
+        this.whichMonth = whichMonth;
+    }
 
     //得到导出model的集合List
-    public List<OutputExcelModel> getListOfOutputExcel(){
+    public List<OutputExcelModel> getListOfOutputExcel() {
         List<OutputExcelModel> list = new ArrayList<>();
         try {
-            List<GetResultTable> grtList = App.db.selector(GetResultTable.class).findAll();
-            for(int i=0;i<grtList.size();i++){
+//            List<GetResultTable> grtList = App.db.selector(GetResultTable.class).findAll();
+            List<GetResultTable> grtList = App.db.selector(GetResultTable.class)
+                    .where("year", "=", whichYear)
+                    .and("month", "=", whichMonth).findAll();
+            for (int i = 0; i < grtList.size(); i++) {
                 ChildOfWorkersTable iwm = App.db.selector(ChildOfWorkersTable.class).
-                        where("w_cardnumber","=",grtList.get(i).getCardNumber()).findFirst();
+                        where("w_cardnumber", "=", grtList.get(i).getCardNumber()).findFirst();
                 OutputExcelModel model = new OutputExcelModel();
                 model.setDepartment(iwm.getDepartment());
                 model.setPosition(iwm.getPosition());
                 model.setName(iwm.getName());
                 model.setCardNumber(grtList.get(i).getCardNumber());
-                model.setDate(grtList.get(i).getYear()+"/"+grtList.get(i).getMonth()+"/"+grtList.get(i).getDay());
+                model.setDate(grtList.get(i).getYear() + "/" + grtList.get(i).getMonth() + "/" + grtList.get(i).getDay());
                 model.setTime(grtList.get(i).getTime());
-                model.setWeekday(HCTimeUtils.getWeek(grtList.get(i).getYear(),grtList.get(i).getMonth(),grtList.get(i).getDay()));
+                model.setWeekday(HCTimeUtils.getWeek(grtList.get(i).getYear(), grtList.get(i).getMonth(), grtList.get(i).getDay()));
                 model.setResult(grtList.get(i).getResult());
                 list.add(model);
             }
@@ -55,21 +65,19 @@ public class OutputRecord {
     }
 
 
-    String whichYear = "" ;
-    String whichMonth = "";
-    String tableName = whichYear+"年"+whichMonth+"月考勤记录表";
-    public void writeExcel(List<OutputExcelModel> list){
+    public int writeExcel(List<OutputExcelModel> list) {
+        String tableName = whichYear + "年" + whichMonth + "月考勤记录表";
         WritableWorkbook wwb = null;
         Label label = null;
-        String[] titles = new String[]{"部门","职位","名字","身份证","日期","时间","星期几","打卡结果"};
-        String filePath1 = Environment.getExternalStorageDirectory()+"//OutWorkers";
-        if(FileUtils.isFileExists(filePath1)){
-            String filePath2 = filePath1+"/"+tableName+".xls";
+        String[] titles = new String[]{"部门", "职位", "名字", "身份证", "日期", "时间", "星期几", "打卡结果"};
+        String filePath1 = Environment.getExternalStorageDirectory() + "//inputFS";
+        if (FileUtils.isFileExists(filePath1)) {
+            String filePath2 = filePath1 + "/" + tableName + ".xls";
             try {
                 OutputStream os = new FileOutputStream(filePath2);
                 wwb = Workbook.createWorkbook(os);
-                WritableSheet ws = wwb.createSheet(tableName,0);
-                for(int i=0;i<titles.length;i++){
+                WritableSheet ws = wwb.createSheet(tableName, 0);
+                for (int i = 0; i < titles.length; i++) {
                     label = new Label(i, 1, titles[i]);
                     ws.addCell(label);
                 }
@@ -100,7 +108,7 @@ public class OutputRecord {
                 e.printStackTrace();
             } catch (WriteException e) {
                 e.printStackTrace();
-            }finally {
+            } finally {
                 try {
                     wwb.close();
                 } catch (IOException e) {
@@ -110,5 +118,6 @@ public class OutputRecord {
                 }
             }
         }
+        return list.size();
     }
 }
