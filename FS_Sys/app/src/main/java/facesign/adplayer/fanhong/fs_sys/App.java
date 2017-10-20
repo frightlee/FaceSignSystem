@@ -21,6 +21,8 @@ public class App extends Application {
     public static final String IN_ITME = "in_time";  //上班时间字段名
     public static final String OUT_TIME = "out_time"; //下班时间字段名
     public static String superPwd = "2234";
+    //备份接口
+    public static final String SAVEURL = "http://m.wuyebest.com/public/LTSXT/kq.php";
     @Override
     public void onCreate() {
         super.onCreate();
