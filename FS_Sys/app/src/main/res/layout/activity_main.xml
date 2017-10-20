@@ -19,7 +19,9 @@
 
         <com.zhy.autolayout.AutoRelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="60px"
+            android:layout_height="wrap_content"
+            android:paddingTop="10px"
+            android:paddingBottom="10px"
             android:layout_alignParentBottom="true"
             android:background="@color/gray1">
 

@@ -52,6 +52,7 @@ public class DBUtils {
                     where("w_cardnumber", "=", idNumber).findFirst();
 
             grt = new GetResultTable(idNumber, year, month, day, time);
+            grt.setTime(hour+":"+minute+":"+second);
             if (isSigned(ifHascard(idNumber, year, month, day, 1)) == -1) { //没有上班记录
                 grt.setStatus(1);//此时为上班
                 if (hour < inHour) {
@@ -85,7 +86,6 @@ public class DBUtils {
                 } else { //上下班记录都有
                     id = isSigned(ifHascard(idNumber, year, month, day ,2));
                     grt = App.db.selector(GetResultTable.class).where("id","=",id).findFirst();
-                    grt.setTime(hour+":"+minute+":"+second);
                     if (hour < outHour) {
                         grt.setResult(App.RESULTS[2]);
                     } else if (hour == outHour) {
