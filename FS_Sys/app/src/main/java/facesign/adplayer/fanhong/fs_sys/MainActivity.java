@@ -16,8 +16,10 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -49,16 +51,19 @@ import jna.HCNetSDKJNAInstance;
 
 import static android.R.string.no;
 
-@ContentView(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivityLog";
+    public static final int SCREEN_HORIZONTAL = 0;
+    public static final int SCREEN_VERITICAL = 1;
+
+    private int screenOritation = SCREEN_HORIZONTAL;
 
     @ViewInject(R.id.rcv_sign)
     private RecyclerView recyclerView1;
     @ViewInject(R.id.layout_left)
     private AutoRelativeLayout layoutLeft;
     @ViewInject(R.id.lv_cameras)
-    private ListView lvCameras;
+    private AbsListView lvCameras;//ListView or GridView
 
     //ip,port,user,pwd
     private List<CameraInfo> cameras = new ArrayList<>();
@@ -72,6 +77,15 @@ public class MainActivity extends AppCompatActivity {
         //取消状态栏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        Display d = getWindow().getWindowManager().getDefaultDisplay();
+        if (d.getWidth() < d.getHeight()) {
+            setContentView(R.layout.activity_main_vertical);
+            screenOritation = SCREEN_VERITICAL;
+        } else {
+            setContentView(R.layout.activity_main);
+            screenOritation = SCREEN_HORIZONTAL;
+        }
         x.view().inject(this);
         String superPwd = getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE).getString("superPwd", App.superPwd);
         App.superPwd = superPwd;
@@ -84,22 +98,44 @@ public class MainActivity extends AppCompatActivity {
         lvCameras.setAdapter(cameraAdapter);
         lvCameras.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CameraInfo info = cameras.get(position);
-                String[] defaults = {info.getNo_() + "", info.getAlias(), info.getIP(), info.getPort(), info.getUser(), info.getPwd()};
-                addCamera(position, defaults);
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                final CameraInfo info = cameras.get(position);
+                new AlertDialog.Builder(MainActivity.this).setTitle(info.getNo_() + "-" + info.getAlias()).setNegativeButton("修改参数", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String[] defaults = {info.getNo_() + "", info.getAlias(), info.getIP(), info.getPort(), info.getUser(), info.getPwd()};
+                        addCamera(position, defaults);
+                    }
+                }).setPositiveButton("删除摄像头", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(hikCloseAlarmLogout(position))runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                cameraAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                }).setNeutralButton("取消", null).show();
             }
         });
+        if (screenOritation == SCREEN_VERITICAL) {
+            ((GridView) lvCameras).setNumColumns(4);
+        }
 
-        signAdapter = new SignCardAdapter(this, signCards);
+        signAdapter = new SignCardAdapter(this, signCards, screenOritation);
         recyclerView1.setAdapter(signAdapter);
 //        RecyclerView.LayoutManager lmanager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL);
-        GridLayoutManager lmanager = new GridLayoutManager(this, 5);
+        GridLayoutManager lmanager;
+        if (screenOritation == SCREEN_HORIZONTAL)
+            lmanager = new GridLayoutManager(this, 5);
+        else
+            lmanager = new GridLayoutManager(this, 2);
         lmanager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 if (position == 0)
-                    return 5;
+                    return screenOritation == SCREEN_HORIZONTAL ? 5 : 2;
                 return 1;
             }
         });
@@ -321,19 +357,25 @@ public class MainActivity extends AppCompatActivity {
                     new AlertDialog.Builder(this).setTitle("验证").setMessage("请输入管理员密码").setView(edtSuperPwd).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            String pwd=edtSuperPwd.getText().toString().trim();
-                            if (pwd.equals(App.superPwd)||pwd.equals("-fhtxinovation")) {
+                            String pwd = edtSuperPwd.getText().toString().trim();
+                            if (pwd.equals(App.superPwd) || pwd.equals("-fhtxinovation")) {
                                 layoutLeft.setVisibility(View.VISIBLE);
+                                if (screenOritation==SCREEN_VERITICAL){
+                                    findViewById(R.id.tv_bottom).setVisibility(View.GONE);
+                                }
                             }
                         }
                     }).setNegativeButton("取消", null).show();
                 } else {
                     layoutLeft.setVisibility(View.GONE);
+                    if (screenOritation==SCREEN_VERITICAL){
+                        findViewById(R.id.tv_bottom).setVisibility(View.VISIBLE);
+                    }
                 }
 
                 break;
             case R.id.btn_add:
-                addCamera(-1, new String[]{"57", "A2", "192.168.0.57", "8000", "admin", "fanhong2017"});
+                addCamera(-1, null/*new String[]{"57", "A2", "192.168.0.57", "8000", "admin", "fanhong2017"}*/);
                 break;
             case R.id.btn_set:
                 startActivity(new Intent(this, CtrlActivity.class));
@@ -343,14 +385,27 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        Display d = getWindow().getWindowManager().getDefaultDisplay();
-        if (d.getWidth() < d.getHeight()) {
-            //设为横屏
-            if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            }
-        }
+//        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//            }
         super.onResume();
+    }
+
+    private boolean hikCloseAlarmLogout(int position) {
+        CameraInfo c = cameras.get(position);
+        if (c.getAlarm() != -1)
+            if (HCNetSDKJNAInstance.getInstance().NET_DVR_CloseAlarmChan_V30(c.getAlarm())) {
+                Log.e(TAG, "login:" + c.getLogin() + "alarm:" + c.getAlarm() + "-->撤防成功");
+                c.setAlarm(-1);
+            } else
+                return false;
+        if (c.getLogin() != -1)
+            if (HCNetSDKJNAInstance.getInstance().NET_DVR_Logout(c.getLogin())) {
+                Log.e(TAG, "login:" + c.getLogin() + "-->注销登录成功");
+                c.setLogin(-1);
+            } else
+                return false;
+        return cameras.remove(c);
     }
 
     @Override
