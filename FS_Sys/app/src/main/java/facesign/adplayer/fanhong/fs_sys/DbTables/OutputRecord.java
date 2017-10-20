@@ -1,6 +1,7 @@
 package facesign.adplayer.fanhong.fs_sys.DbTables;
 
 import android.os.Environment;
+import android.util.Log;
 
 import org.xutils.ex.DbException;
 
@@ -39,14 +40,17 @@ public class OutputRecord {
     //得到导出model的集合List
     public List<OutputExcelModel> getListOfOutputExcel() {
         List<OutputExcelModel> list = new ArrayList<>();
+        Log.i("xq","导出的年月==>"+whichYear+"丶"+whichMonth);
         try {
 //            List<GetResultTable> grtList = App.db.selector(GetResultTable.class).findAll();
             List<GetResultTable> grtList = App.db.selector(GetResultTable.class)
-                    .where("year", "=", whichYear)
-                    .and("month", "=", whichMonth).findAll();
+                    .where("m_year", "=", whichYear)
+                    .and("m_month", "=", whichMonth).findAll();
+            Log.i("xq","查询的grtList.size==>"+grtList.size());
             for (int i = 0; i < grtList.size(); i++) {
                 ChildOfWorkersTable iwm = App.db.selector(ChildOfWorkersTable.class).
                         where("w_cardnumber", "=", grtList.get(i).getCardNumber()).findFirst();
+                Log.e("xq",iwm.toString());
                 OutputExcelModel model = new OutputExcelModel();
                 model.setDepartment(iwm.getDepartment());
                 model.setPosition(iwm.getPosition());
@@ -58,6 +62,7 @@ public class OutputRecord {
                 model.setResult(grtList.get(i).getResult());
                 list.add(model);
             }
+            Log.i("xq","导出的list.size==>"+list.size());
         } catch (DbException e) {
             e.printStackTrace();
         }

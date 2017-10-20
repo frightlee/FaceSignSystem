@@ -24,7 +24,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:inputType="number"
-            android:maxLength="2"
+            android:maxLength="4"
             android:background="@drawable/edt_biankuang"
             android:singleLine="true"/>
         <TextView

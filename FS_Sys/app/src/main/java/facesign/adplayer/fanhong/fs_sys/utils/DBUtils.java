@@ -2,6 +2,7 @@ package facesign.adplayer.fanhong.fs_sys.utils;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.xutils.db.sqlite.WhereBuilder;
 import org.xutils.ex.DbException;
@@ -50,8 +51,8 @@ public class DBUtils {
             ChildOfWorkersTable cowt = App.db.selector(ChildOfWorkersTable.class).
                     where("w_cardnumber", "=", idNumber).findFirst();
 
+            grt = new GetResultTable(idNumber, year, month, day, time);
             if (isSigned(ifHascard(idNumber, year, month, day, 1)) == -1) { //没有上班记录
-                grt = new GetResultTable(idNumber, year, month, day, time);
                 grt.setStatus(1);//此时为上班
                 if (hour < inHour) {
                     grt.setResult(App.RESULTS[0]);
@@ -64,7 +65,7 @@ public class DBUtils {
                 } else {
                     grt.setResult(App.RESULTS[1]);
                 }
-                App.db.saveOrUpdate(grt);
+
             } else {
                 if (isSigned(ifHascard(idNumber, year, month, day, 2)) == -1) { //有上班记录无下班
                     grt = new GetResultTable(idNumber, year, month, day, time);
@@ -80,7 +81,7 @@ public class DBUtils {
                     } else {
                         grt.setResult(App.RESULTS[3]);
                     }
-                    App.db.saveOrUpdate(grt);
+
                 } else { //上下班记录都有
                     id = isSigned(ifHascard(idNumber, year, month, day ,2));
                     grt = App.db.selector(GetResultTable.class).where("id","=",id).findFirst();
@@ -96,9 +97,11 @@ public class DBUtils {
                     } else {
                         grt.setResult(App.RESULTS[3]);
                     }
-                    App.db.saveOrUpdate(grt);
+
                 }
             }
+            App.db.saveOrUpdate(grt);
+            Log.i("xq","触发打卡==>"+grt.toString());
             return new String[]{cowt.getDepartment(),cowt.getPosition()};
         } catch (DbException e) {
             e.printStackTrace();

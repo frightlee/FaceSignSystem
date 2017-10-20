@@ -18,11 +18,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.xutils.db.sqlite.WhereBuilder;
+import org.xutils.ex.DbException;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import facesign.adplayer.fanhong.fs_sys.DbTables.GetResultTable;
 import facesign.adplayer.fanhong.fs_sys.DbTables.InputWorkers;
 import facesign.adplayer.fanhong.fs_sys.DbTables.OutputRecord;
 
@@ -74,8 +77,9 @@ public class CtrlActivity extends AppCompatActivity {
             case R.id.remove_camera:
                 break;
             case R.id.load_out_messages:
-                OutputRecord or = new OutputRecord(2017, 10);
-                or.writeExcel(or.getListOfOutputExcel());
+//                OutputRecord or = new OutputRecord(2017, 10);
+//                or.writeExcel(or.getListOfOutputExcel());
+                outExcel(CtrlActivity.this);
                 break;
             case R.id.change_password:
                 changeSuperPwd();
@@ -126,7 +130,7 @@ public class CtrlActivity extends AppCompatActivity {
     }
 
     public void setIntime(final Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_set_time, null);
         builder.setView(view);
@@ -135,6 +139,7 @@ public class CtrlActivity extends AppCompatActivity {
         setMinute = view.findViewById(R.id.input_minute);
         submit = view.findViewById(R.id.submit);
         tv.setText("设置上班时间（24小时制）");
+        final AlertDialog dialog = builder.create();
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,15 +152,18 @@ public class CtrlActivity extends AppCompatActivity {
                         Toast.makeText(context, "请设定正确的时间", Toast.LENGTH_SHORT).show();
                     } else {
                         mSharedPref.edit().putString(App.IN_ITME, hour + "_" + minute).commit();
-                        Log.i("xq", "commit intime==>success");
+                        Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+//                        Log.i("xq", "commit intime==>success");
                     }
                 }
             }
         });
+        dialog.show();
     }
 
     public void setOuttime(final Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_set_time, null);
         builder.setView(view);
@@ -164,6 +172,7 @@ public class CtrlActivity extends AppCompatActivity {
         setMinute = view.findViewById(R.id.input_minute);
         submit = view.findViewById(R.id.submit);
         tv.setText("设置下班时间（24小时制）");
+        final AlertDialog dialog = builder.create();
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,15 +185,18 @@ public class CtrlActivity extends AppCompatActivity {
                         Toast.makeText(context, "请设定正确的时间", Toast.LENGTH_SHORT).show();
                     } else {
                         mSharedPref.edit().putString(App.OUT_TIME, hour + "_" + minute).commit();
-                        Log.i("xq", "commit intime==>success");
+                        Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+//                        Log.i("xq", "commit intime==>success");
                     }
                 }
             }
         });
+        dialog.show();
     }
 
-    public void outExcel(Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    public void outExcel(final Context context) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_set_time, null);
         builder.setView(view);
@@ -197,16 +209,41 @@ public class CtrlActivity extends AppCompatActivity {
         tv.setText("输入要导出记录的年和月");
         hy.setText("年");
         mm.setText("月");
-        if (!TextUtils.isEmpty(setHour.getText()) && !TextUtils.isEmpty(setMinute.getText())) {
-            int year = Integer.parseInt(setHour.getText().toString());
-            int month = Integer.parseInt(setMinute.getText().toString());
-            OutputRecord or = new OutputRecord(year, month);
-            if ((or.getListOfOutputExcel() != null && or.writeExcel(or.getListOfOutputExcel()) > 0)) {
-                Toast.makeText(context, "导出成功！", Toast.LENGTH_SHORT).show();
+        final AlertDialog dialog = builder.create();
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!TextUtils.isEmpty(setHour.getText()) && !TextUtils.isEmpty(setMinute.getText())) {
+                    int year = Integer.parseInt(setHour.getText().toString());
+                    int month = Integer.parseInt(setMinute.getText().toString());
+                    OutputRecord or = new OutputRecord(year, month);
+                    if ((or.getListOfOutputExcel() != null && or.writeExcel(or.getListOfOutputExcel()) > 0)) {
+                        Toast.makeText(context, "导出成功！", Toast.LENGTH_SHORT).show();
+                        outSuccess(context);
+                    } else {
+                        Toast.makeText(context, "导出失败！", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(context, "导出失败！", Toast.LENGTH_SHORT).show();
+                }
+                dialog.dismiss();
             }
-        } else {
-            Toast.makeText(context, "导出失败！", Toast.LENGTH_SHORT).show();
-        }
+        });
+        dialog.show();
+    }
+
+    private void outSuccess(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("提示");
+        builder.setMessage("Excel表已保存于 inputFS文件夹目录下");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
