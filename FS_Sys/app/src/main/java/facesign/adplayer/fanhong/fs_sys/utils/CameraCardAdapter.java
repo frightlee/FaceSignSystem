@@ -1,6 +1,7 @@
 package facesign.adplayer.fanhong.fs_sys.utils;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.zhy.autolayout.utils.AutoUtils;
 
+import org.w3c.dom.Text;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
@@ -63,7 +65,7 @@ public class CameraCardAdapter extends BaseAdapter {
         CameraInfo info = list.get(position);
         holder.tvNo_.setText("编号：" + info.getNo_());
         holder.tvAlias.setText("别名：" + info.getAlias());
-        holder.tvState.setText("状态：" + (info.getAlarm() == -1 ? "未连接" : "已连接"));
+        holder.tvState.setText("状态：" + (info.getAlarm() == -1 ? "未连接" : Html.fromHtml("<font color=\"#00b4ff\">已连接</font>")));
         return convertView;
     }
 

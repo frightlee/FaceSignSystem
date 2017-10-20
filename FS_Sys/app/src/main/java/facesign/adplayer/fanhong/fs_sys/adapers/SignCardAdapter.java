@@ -16,6 +16,7 @@ import org.xutils.x;
 
 import java.util.List;
 
+import facesign.adplayer.fanhong.fs_sys.MainActivity;
 import facesign.adplayer.fanhong.fs_sys.R;
 
 /**
@@ -26,11 +27,13 @@ public class SignCardAdapter extends RecyclerView.Adapter<SignCardAdapter.ViewHo
     private LayoutInflater inflater;
     private Context context;
     private List<SignCard> list;
+    private int screenOritation;
 
-    public SignCardAdapter(Context context, List<SignCard> list) {
+    public SignCardAdapter(Context context, List<SignCard> list, int screenOritation) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.list = list;
+        this.screenOritation = screenOritation;
     }
 
     @Override
@@ -41,10 +44,16 @@ public class SignCardAdapter extends RecyclerView.Adapter<SignCardAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        if (viewType == 0) {
-            view = inflater.inflate(R.layout.sign_card_last, parent, false);
-        } else {
-            view = inflater.inflate(R.layout.sign_card, parent, false);
+        if (screenOritation == MainActivity.SCREEN_VERITICAL)
+            if (viewType == 0)
+                view = inflater.inflate(R.layout.sign_card_last_vertical, parent, false);
+            else
+                view = inflater.inflate(R.layout.sign_card_vertical, parent, false);
+        else {
+            if (viewType == 0)
+                view = inflater.inflate(R.layout.sign_card_last, parent, false);
+            else
+                view = inflater.inflate(R.layout.sign_card, parent, false);
         }
         ViewHolder holder = new ViewHolder(view);
         return holder;
@@ -58,7 +67,12 @@ public class SignCardAdapter extends RecyclerView.Adapter<SignCardAdapter.ViewHo
         holder.tvDepartment.setText("部门：" + info.department);
         holder.tvPosition.setText("职位：" + info.position);
         holder.tvCamera.setText("摄像机：" + info.camera);
-        holder.tvTime.setText("签到时间：" + info.time);
+        String time=info.time;
+        if (screenOritation==MainActivity.SCREEN_VERITICAL){
+            StringBuffer sbf=new StringBuffer(time);
+            sbf.insert(sbf.indexOf("\u3000"),"\n");
+        }
+        holder.tvTime.setText("签到时间：" + time);
     }
 
     @Override

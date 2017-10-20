@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/gray2"
+    android:padding="43.2px">
+    <com.zhy.autolayout.AutoRelativeLayout
+        android:layout_width="453.6px"
+        android:layout_height="230.4px"
+        android:layout_centerVertical="true"
+        android:background="@color/white"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/img_head"
+            android:layout_width="102.6px"
+            android:layout_height="134.4px"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/liantong" />
+
+        <com.zhy.autolayout.AutoLinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16px"
+            android:layout_toRightOf="@id/img_head"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="姓名：徐强"
+                android:textColor="@color/black"
+                android:textSize="24px" />
+
+            <TextView
+                android:id="@+id/tv_department"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2px"
+                android:text="部门：技术部"
+                android:textColor="@color/black"
+                android:textSize="24px" />
+
+            <TextView
+                android:id="@+id/tv_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2px"
+                android:text="职位：android程序员"
+                android:textColor="@color/black"
+                android:textSize="24px" />
+
+            <TextView
+                android:id="@+id/tv_camera"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2px"
+                android:text="签到时间：2017/10/19　08:23:52"
+                android:textColor="@color/black"
+                android:textSize="24px" />
+        </com.zhy.autolayout.AutoLinearLayout>
+    </com.zhy.autolayout.AutoRelativeLayout>
+</com.zhy.autolayout.AutoRelativeLayout>
