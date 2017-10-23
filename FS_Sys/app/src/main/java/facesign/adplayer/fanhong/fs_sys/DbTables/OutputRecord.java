@@ -51,7 +51,6 @@ public class OutputRecord {
             for (int i = 0; i < grtList.size(); i++) {
                 ChildOfWorkersTable iwm = App.db.selector(ChildOfWorkersTable.class).
                         where("w_cardnumber", "=", grtList.get(i).getCardNumber()).findFirst();
-                Log.e("xq",iwm.toString());
                 OutputExcelModel model = new OutputExcelModel();
                 model.setDepartment(iwm.getDepartment());
                 model.setPosition(iwm.getPosition());
@@ -63,6 +62,7 @@ public class OutputRecord {
                 model.setResult(grtList.get(i).getResult());
                 list.add(model);
             }
+            Log.i("xq",list.toString());
             Log.i("xq","导出的list.size==>"+list.size());
         } catch (DbException e) {
             e.printStackTrace();
@@ -138,10 +138,5 @@ public class OutputRecord {
             }
         }
         return list.size();
-    }
-
-    //数据备份
-    public static void sendRecord(){
-        
     }
 }
