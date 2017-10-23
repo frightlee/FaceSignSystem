@@ -12,7 +12,6 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,9 +22,9 @@ import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.x;
 
-import facesign.adplayer.fanhong.fs_sys.DbTables.ChildOfWorkersTable;
-import facesign.adplayer.fanhong.fs_sys.DbTables.InputWorkers;
-import facesign.adplayer.fanhong.fs_sys.DbTables.OutputRecord;
+import facesign.adplayer.fanhong.fs_sys.dbtables.ChildOfWorkersTable;
+import facesign.adplayer.fanhong.fs_sys.dbtables.InputWorkers;
+import facesign.adplayer.fanhong.fs_sys.dbtables.OutputRecord;
 
 @ContentView(R.layout.activity_ctrl)
 public class CtrlActivity extends AppCompatActivity {

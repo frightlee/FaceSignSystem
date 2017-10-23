@@ -1,4 +1,4 @@
-package facesign.adplayer.fanhong.fs_sys.DbTables;
+package facesign.adplayer.fanhong.fs_sys.dbtables;
 
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;

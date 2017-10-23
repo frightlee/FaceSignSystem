@@ -1,4 +1,4 @@
-package facesign.adplayer.fanhong.fs_sys.DbTables;
+package facesign.adplayer.fanhong.fs_sys.dbtables;
 
 import android.os.Environment;
 import android.util.Log;

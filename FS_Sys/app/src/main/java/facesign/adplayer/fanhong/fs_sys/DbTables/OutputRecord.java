@@ -1,4 +1,4 @@
-package facesign.adplayer.fanhong.fs_sys.DbTables;
+package facesign.adplayer.fanhong.fs_sys.dbtables;
 
 import android.os.Environment;
 import android.util.Log;
@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import facesign.adplayer.fanhong.fs_sys.App;
-import facesign.adplayer.fanhong.fs_sys.models.InputWorkersModel;
 import facesign.adplayer.fanhong.fs_sys.models.OutputExcelModel;
 import facesign.adplayer.fanhong.fs_sys.utils.FileUtils;
 import facesign.adplayer.fanhong.fs_sys.utils.HCTimeUtils;
@@ -139,5 +138,10 @@ public class OutputRecord {
             }
         }
         return list.size();
+    }
+
+    //数据备份
+    public static void sendRecord(){
+        
     }
 }
