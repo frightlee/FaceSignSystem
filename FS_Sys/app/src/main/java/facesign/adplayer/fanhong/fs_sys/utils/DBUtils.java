@@ -74,7 +74,7 @@ public class DBUtils {
                     if (hour < outHour) {
                         grt.setResult(App.RESULTS[2]);
                     } else if (hour == outHour) {
-                        if (minute <= outMinute) {
+                        if (minute < outMinute) {
                             grt.setResult(App.RESULTS[2]);
                         } else {
                             grt.setResult(App.RESULTS[3]);
@@ -136,30 +136,22 @@ public class DBUtils {
         return -1;
     }
 
-    //是否为上班
-    public static boolean doSignIn(String bumen, String zhiwei, String name, String uid, int year, int month, int day, String time) {
-        SignInfo info = new SignInfo();
+    //传入证件号单独查询是否为黑名单
+    public static int isBlack(String idNumber){
+        ChildOfWorkersTable cowt = null;
         try {
-            App.db.saveOrUpdate(info);
+            cowt = App.db.selector(ChildOfWorkersTable.class).where("w_cardnumber","=",idNumber).findFirst();
+            if(cowt.getFlag() == 1){
+                return 1;
+            }else if(cowt.getFlag() == 2){
+                return 2;
+            }else {
+                return -1;
+            }
         } catch (DbException e) {
             e.printStackTrace();
-            return false;
         }
-        return true;
-    }
-
-    //是否为下班
-    public static boolean doSignOut(int id, String bumen, String zhiwei, String name, String uid, String date, String time) {
-        SignInfo info = new SignInfo();
-        if (id != -1)
-            info.setId(id);
-        try {
-            App.db.saveOrUpdate(info);
-        } catch (DbException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return -1;
     }
 
     public static List<SignInfo> findList(int year, int month) {

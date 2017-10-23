@@ -17,8 +17,10 @@ public class ChildOfWorkersTable {
     String position;
     @Column(name = "w_name")  //名字
     String name;
-    @Column(name = "w_cardnumber") //身份证号
+    @Column(name = "w_cardnumber") //证件号
     String cardNumber;
+    @Column(name = "w_flag")  //是否黑名单的标记，1为正经员工,2为黑名单
+    int flag;
 
 
     public int getId() {
@@ -61,6 +63,14 @@ public class ChildOfWorkersTable {
         this.cardNumber = cardNumber;
     }
 
+    public int getFlag() {
+        return flag;
+    }
+
+    public void setFlag(int flag) {
+        this.flag = flag;
+    }
+
     @Override
     public String toString() {
         return "ChildOfWorkersTable{" +
@@ -69,6 +79,7 @@ public class ChildOfWorkersTable {
                 ", position='" + position + '\'' +
                 ", name='" + name + '\'' +
                 ", cardNumber='" + cardNumber + '\'' +
+                ", flag='" + flag + '\'' +
                 '}';
     }
 }

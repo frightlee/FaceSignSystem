@@ -8,4 +8,6 @@
     <string name="remove_camera">删除摄像头</string>
     <string name="output_messages">导出考勤记录</string>
     <string name="change_password">更改管理员密码</string>
+    <string name="open_call">打开报警</string>
+    <string name="close_call">关闭报警</string>
 </resources>

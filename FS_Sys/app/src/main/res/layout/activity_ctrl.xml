@@ -8,57 +8,71 @@
         android:id="@+id/load_in_workers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:text="@string/load_workers" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="20dp">
+
         <Button
             android:id="@+id/set_in_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:text="@string/set_intime"/>
-        <Button
-            android:id="@+id/set_out_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/set_outtime"/>
-    </LinearLayout>
 
     <Button
-        android:id="@+id/remove_camera"
+        android:id="@+id/set_out_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="40dp"
+        android:layout_margin="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:text="@string/remove_camera" />
+        android:text="@string/set_outtime" />
+
+
+    <!--<Button-->
+        <!--android:id="@+id/remove_camera"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:layout_marginTop="40dp"-->
+        <!--android:paddingLeft="10dp"-->
+        <!--android:paddingRight="10dp"-->
+        <!--android:text="@string/remove_camera" />-->
     <Button
         android:id="@+id/load_out_messages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_margin="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:text="@string/output_messages" />
 
     <Button
-        android:id="@+id/change_password"
+    android:id="@+id/change_password"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:text="@string/change_password" />
+    <Button
+        android:id="@+id/open_call"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:text="@string/change_password" />
+        android:text="@string/open_call" />
+
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="返回" />
 </LinearLayout>

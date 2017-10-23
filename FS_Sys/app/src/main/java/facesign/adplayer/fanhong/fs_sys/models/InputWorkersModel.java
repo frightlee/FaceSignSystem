@@ -2,6 +2,7 @@ package facesign.adplayer.fanhong.fs_sys.models;
 
 /**
  * Created by Administrator on 2017/10/18.
+ * 正经员工
  */
 
 public class InputWorkersModel {
@@ -9,6 +10,15 @@ public class InputWorkersModel {
     String position;
     String name;
     String cardNumber;
+    int falg;
+
+    public int getFalg() {
+        return falg;
+    }
+
+    public void setFalg(int falg) {
+        this.falg = falg;
+    }
 
     public String getDepartment() {
         return department;
@@ -49,6 +59,7 @@ public class InputWorkersModel {
                 ", position='" + position + '\'' +
                 ", name='" + name + '\'' +
                 ", cardNumber='" + cardNumber + '\'' +
+                ", falg=" + falg +
                 '}';
     }
 }

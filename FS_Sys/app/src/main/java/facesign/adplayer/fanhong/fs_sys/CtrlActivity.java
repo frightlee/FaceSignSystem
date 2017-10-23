@@ -62,7 +62,7 @@ public class CtrlActivity extends AppCompatActivity {
         mSharedPref = getApplicationContext().getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE);
     }
 
-    @Event({R.id.load_in_workers, R.id.set_in_time, R.id.set_out_time, R.id.remove_camera, R.id.load_out_messages, R.id.change_password})
+    @Event({R.id.load_in_workers, R.id.set_in_time, R.id.set_out_time, R.id.open_call,R.id.load_out_messages, R.id.change_password,R.id.btn_back})
     private void onClick(View v) {
         switch (v.getId()) {
             case R.id.load_in_workers:
@@ -74,7 +74,7 @@ public class CtrlActivity extends AppCompatActivity {
             case R.id.set_out_time:
                 setOuttime(CtrlActivity.this);
                 break;
-            case R.id.remove_camera:
+            case R.id.open_call: //打开、关闭报警
                 break;
             case R.id.load_out_messages:
 //                OutputRecord or = new OutputRecord(2017, 10);
@@ -83,6 +83,9 @@ public class CtrlActivity extends AppCompatActivity {
                 break;
             case R.id.change_password:
                 changeSuperPwd();
+                break;
+            case R.id.btn_back:
+                finish();
                 break;
         }
     }
@@ -253,7 +256,7 @@ public class CtrlActivity extends AppCompatActivity {
         if (d.getWidth() < d.getHeight()) {
             //设为横屏
             if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
         }
     }
