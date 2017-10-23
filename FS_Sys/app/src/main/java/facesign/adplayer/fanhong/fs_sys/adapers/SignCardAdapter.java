@@ -67,10 +67,11 @@ public class SignCardAdapter extends RecyclerView.Adapter<SignCardAdapter.ViewHo
         holder.tvDepartment.setText("部门：" + info.department);
         holder.tvPosition.setText("职位：" + info.position);
         holder.tvCamera.setText("摄像机：" + info.camera);
-        String time=info.time;
-        if (screenOritation==MainActivity.SCREEN_VERITICAL){
-            StringBuffer sbf=new StringBuffer(time);
-            sbf.insert(sbf.indexOf("\u3000"),"\n");
+        String time = info.time;
+        if (screenOritation == MainActivity.SCREEN_VERITICAL && position != 0) {
+            StringBuffer sbf = new StringBuffer(time);
+            sbf.insert(sbf.indexOf("\u3000"), "\n");
+            time = sbf.toString();
         }
         holder.tvTime.setText("签到时间：" + time);
     }

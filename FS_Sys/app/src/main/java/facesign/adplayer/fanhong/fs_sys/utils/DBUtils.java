@@ -106,7 +106,7 @@ public class DBUtils {
         } catch (DbException e) {
             e.printStackTrace();
         }
-        return null;
+        return new String[]{"——","——"};
     }
 
     //查询是否已打上/下班卡的条件   status=1上班，status=2下班

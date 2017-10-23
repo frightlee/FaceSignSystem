@@ -271,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String[] pos = DBUtils.triggerCard(MainActivity.this, uid, absTime);
                 signCards.add(0, new SignCardAdapter.SignCard(blackBitmap, name, pos[0], pos[1], CameraInfo.findNameByNo_(cameras, devNo_), HCTimeUtils.getTimeStr(absTime)));
+//                signCards.add(0, new SignCardAdapter.SignCard(blackBitmap, name, "dep", "pos", CameraInfo.findNameByNo_(cameras, devNo_), HCTimeUtils.getTimeStr(absTime)));
                 if (signCards.size() > 6) {
                     for (int i = 6; i < signCards.size(); i++) {
                         signCards.remove(i);
