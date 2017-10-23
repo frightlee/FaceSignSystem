@@ -89,6 +89,6 @@ public class OutputExcelModel {
                 ", time='" + time + '\'' +
                 ", weekday='" + weekday + '\'' +
                 ", result='" + result + '\'' +
-                '}';
+                '}'+"\r\n";
     }
 }

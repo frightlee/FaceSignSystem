@@ -7,7 +7,11 @@ import android.util.Log;
 import org.xutils.db.sqlite.WhereBuilder;
 import org.xutils.ex.DbException;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import facesign.adplayer.fanhong.fs_sys.App;
 import facesign.adplayer.fanhong.fs_sys.dbtables.ChildOfWorkersTable;
@@ -47,8 +51,10 @@ public class DBUtils {
             int year = HCTimeUtils.getDateTime(timeStamp, "year");
             int month = HCTimeUtils.getDateTime(timeStamp, "month");
             int day = HCTimeUtils.getDateTime(timeStamp, "day");
-            String time = HCTimeUtils.getTimeStr(timeStamp);
-//            String week = HCTimeUtils.getWeek(year, month, day);
+//            //添加打卡的日期，去重
+//            String da = year+""+month+""+day;
+//            App.daSet.add(da);
+
             int hour = HCTimeUtils.getDateTime(timeStamp, "hour");
             int minute = HCTimeUtils.getDateTime(timeStamp, "minute");
             int second = HCTimeUtils.getDateTime(timeStamp, "second");
@@ -178,5 +184,11 @@ public class DBUtils {
             return false;
         }
         return true;
+    }
+
+    //将打卡的日期传入数据库
+    public static void addDates(){
+        Set<String> setA = new HashSet<>();
+        Set<String> setB = new HashSet<>();
     }
 }

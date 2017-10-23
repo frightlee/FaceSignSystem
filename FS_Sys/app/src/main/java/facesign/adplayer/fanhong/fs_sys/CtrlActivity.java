@@ -12,6 +12,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,11 +21,15 @@ import android.widget.Toast;
 import org.xutils.ex.DbException;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
+import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
+
+import java.util.List;
 
 import facesign.adplayer.fanhong.fs_sys.dbtables.ChildOfWorkersTable;
 import facesign.adplayer.fanhong.fs_sys.dbtables.InputWorkers;
 import facesign.adplayer.fanhong.fs_sys.dbtables.OutputRecord;
+import facesign.adplayer.fanhong.fs_sys.models.OutputExcelModel;
 
 
 @ContentView(R.layout.activity_ctrl)
@@ -41,6 +46,8 @@ public class CtrlActivity extends AppCompatActivity {
 //    Button loadOut;
 //    @ViewInject(R.id.change_password)
 //    Button changePassword;
+    @ViewInject(R.id.open_call)
+    CheckBox openCall;
 
     //设定时间弹窗里的控件
     TextView tv, hy, mm;
@@ -58,6 +65,10 @@ public class CtrlActivity extends AppCompatActivity {
 
     private void init() {
         mSharedPref = getApplicationContext().getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE);
+        if(App.blackAlarm){
+            openCall.setChecked(true);
+        }else
+            openCall.setChecked(false);
     }
     @Event(value = R.id.open_call,type = CompoundButton.OnCheckedChangeListener.class)
     private void checkClick(CompoundButton buttonView, boolean isChecked){
@@ -229,7 +240,8 @@ public class CtrlActivity extends AppCompatActivity {
                     int year = Integer.parseInt(setHour.getText().toString());
                     int month = Integer.parseInt(setMinute.getText().toString());
                     OutputRecord or = new OutputRecord(year, month);
-                    if ((or.getListOfOutputExcel() != null && or.writeExcel(or.getListOfOutputExcel()) > 0)) {
+                    List<OutputExcelModel> list = or.getListOfOutputExcel();
+                    if ((list != null && or.writeExcel(list) > 0)) {
                         Toast.makeText(context, "导出成功！", Toast.LENGTH_SHORT).show();
                         outSuccess(context);
                     } else {

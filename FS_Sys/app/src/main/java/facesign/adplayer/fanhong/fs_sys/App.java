@@ -10,6 +10,8 @@ import org.xutils.db.table.TableEntity;
 import org.xutils.x;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Administrator on 2017/10/16.
@@ -22,6 +24,7 @@ public class App extends Application {
     public static final String OUT_TIME = "out_time"; //下班时间字段名
     public static String superPwd = "2234";
     public static boolean blackAlarm = false;
+
     //备份接口
     public static final String SAVEURL = "http://m.wuyebest.com/public/LTSXT/kq.php";
     @Override
