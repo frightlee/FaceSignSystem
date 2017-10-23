@@ -24,6 +24,9 @@ import facesign.adplayer.fanhong.fs_sys.models.SignInfo;
  */
 
 public class DBUtils {
+    public static final int NORMAL = 1;
+    public static final int BLACK = 2;
+    public static final int ERROR = -1;
 
     //触发打卡
     public static String[] triggerCard(Context context, String idNumber, int timeStamp) {
@@ -39,7 +42,7 @@ public class DBUtils {
             inHour = Integer.parseInt(inTime.split("_")[0]);
             inMinute = Integer.parseInt(inTime.split("_")[1]);
         }
-        if(!TextUtils.isEmpty(outTime)){
+        if (!TextUtils.isEmpty(outTime)) {
             outHour = Integer.parseInt(outTime.split("_")[0]);
             outMinute = Integer.parseInt(outTime.split("_")[1]);
         }
@@ -90,8 +93,8 @@ public class DBUtils {
                     }
 
                 } else { //上下班记录都有
-                    id = isSigned(ifHascard(idNumber, year, month, day ,2));
-                    grt = App.db.selector(GetResultTable.class).where("id","=",id).findFirst();
+                    id = isSigned(ifHascard(idNumber, year, month, day, 2));
+                    grt = App.db.selector(GetResultTable.class).where("id", "=", id).findFirst();
                     if (hour < outHour) {
                         grt.setResult(App.RESULTS[2]);
                     } else if (hour == outHour) {
@@ -106,14 +109,14 @@ public class DBUtils {
 
                 }
             }
-            grt.setTime(hour+":"+minute+":"+second);
+            grt.setTime(hour + ":" + minute + ":" + second);
             App.db.saveOrUpdate(grt);
-            Log.i("xq","触发打卡==>"+grt.toString());
-            return new String[]{cowt.getDepartment(),cowt.getPosition()};
+            Log.i("xq", "触发打卡==>" + grt.toString());
+            return new String[]{cowt.getDepartment(), cowt.getPosition()};
         } catch (DbException e) {
             e.printStackTrace();
         }
-        return new String[]{"",""};
+        return new String[]{"——", "——"};
     }
 
     //查询是否已打上/下班卡的条件   status=1上班，status=2下班
@@ -143,21 +146,21 @@ public class DBUtils {
     }
 
     //传入证件号单独查询是否为黑名单
-    public static int isBlack(String idNumber){
+    public static int isBlack(String idNumber) {
         ChildOfWorkersTable cowt = null;
         try {
-            cowt = App.db.selector(ChildOfWorkersTable.class).where("w_cardnumber","=",idNumber).findFirst();
-            if(cowt.getFlag() == 2){
-                return 2;
-            }else if(cowt.getFlag() == 1){
-                return 1;
-            }else {
-                return -1;
+            cowt = App.db.selector(ChildOfWorkersTable.class).where("w_cardnumber", "=", idNumber).findFirst();
+            if (cowt.getFlag() == 2) {
+                return BLACK;
+            } else if (cowt.getFlag() == 1) {
+                return NORMAL;
+            } else {
+                return ERROR;
             }
         } catch (DbException e) {
             e.printStackTrace();
         }
-        return -1;
+        return ERROR;
     }
 
     public static List<SignInfo> findList(int year, int month) {

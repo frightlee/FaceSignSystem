@@ -10,4 +10,5 @@
     <string name="change_password">更改管理员密码</string>
     <string name="open_call">打开报警</string>
     <string name="close_call">关闭报警</string>
+    <string name="black_warning">黑名单警告</string>
 </resources>

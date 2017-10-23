@@ -70,7 +70,7 @@ public class SignCardAdapter extends RecyclerView.Adapter<SignCardAdapter.ViewHo
         String time = info.time;
         if (screenOritation == MainActivity.SCREEN_VERITICAL && position != 0) {
             StringBuffer sbf = new StringBuffer(time);
-            sbf.insert(sbf.indexOf("\u3000"), "\n");
+            sbf.insert(sbf.indexOf("\u3000"), "\n\u3000\u3000\u3000\u3000");
             time = sbf.toString();
         }
         holder.tvTime.setText("签到时间：" + time);

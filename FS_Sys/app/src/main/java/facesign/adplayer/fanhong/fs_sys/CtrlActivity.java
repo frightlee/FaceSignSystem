@@ -31,6 +31,7 @@ import facesign.adplayer.fanhong.fs_sys.dbtables.InputWorkers;
 import facesign.adplayer.fanhong.fs_sys.dbtables.OutputRecord;
 import facesign.adplayer.fanhong.fs_sys.models.OutputExcelModel;
 
+
 @ContentView(R.layout.activity_ctrl)
 public class CtrlActivity extends AppCompatActivity {
 //    @ViewInject(R.id.load_in_workers)
