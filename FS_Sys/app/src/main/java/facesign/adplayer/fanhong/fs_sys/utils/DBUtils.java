@@ -107,7 +107,7 @@ public class DBUtils {
         } catch (DbException e) {
             e.printStackTrace();
         }
-        return new String[]{"——","——"};
+        return new String[]{"",""};
     }
 
     //查询是否已打上/下班卡的条件   status=1上班，status=2下班
@@ -141,10 +141,10 @@ public class DBUtils {
         ChildOfWorkersTable cowt = null;
         try {
             cowt = App.db.selector(ChildOfWorkersTable.class).where("w_cardnumber","=",idNumber).findFirst();
-            if(cowt.getFlag() == 1){
-                return 1;
-            }else if(cowt.getFlag() == 2){
+            if(cowt.getFlag() == 2){
                 return 2;
+            }else if(cowt.getFlag() == 1){
+                return 1;
             }else {
                 return -1;
             }
