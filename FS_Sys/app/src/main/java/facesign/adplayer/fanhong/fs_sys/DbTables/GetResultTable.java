@@ -31,12 +31,12 @@ public class GetResultTable {
 
     }
 
-    public GetResultTable(String cardNumber, int year, int month, int day, String time/*, String week*/) {
+    public GetResultTable(String cardNumber, int year, int month, int day/*, String time, String week*/) {
         this.cardNumber = cardNumber;
         this.year = year;
         this.month = month;
         this.day = day;
-        this.time = time;
+//        this.time = time;
 //        this.week = week;
         //status,result由判断得出
     }

@@ -24,10 +24,11 @@ public class DBUtils {
     //触发打卡
     public static String[] triggerCard(Context context, String idNumber, int timeStamp) {
         GetResultTable grt = null;
-        int inHour = -1;
-        int inMinute = -1;
-        int outHour = -1;
-        int outMinute = -1;
+        //默认上下班时间，早9晚6
+        int inHour = 9;
+        int inMinute = 0;
+        int outHour = 18;
+        int outMinute = 0;
         String inTime = context.getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE).getString(App.IN_ITME, "");
         String outTime = context.getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE).getString(App.OUT_TIME, "");
         if (!TextUtils.isEmpty(inTime)) {
@@ -51,8 +52,7 @@ public class DBUtils {
             ChildOfWorkersTable cowt = App.db.selector(ChildOfWorkersTable.class).
                     where("w_cardnumber", "=", idNumber).findFirst();
 
-            grt = new GetResultTable(idNumber, year, month, day, time);
-            grt.setTime(hour+":"+minute+":"+second);
+            grt = new GetResultTable(idNumber, year, month, day);
             if (isSigned(ifHascard(idNumber, year, month, day, 1)) == -1) { //没有上班记录
                 grt.setStatus(1);//此时为上班
                 if (hour < inHour) {
@@ -69,7 +69,7 @@ public class DBUtils {
 
             } else {
                 if (isSigned(ifHascard(idNumber, year, month, day, 2)) == -1) { //有上班记录无下班
-                    grt = new GetResultTable(idNumber, year, month, day, time);
+//                    grt = new GetResultTable(idNumber, year, month, day);
                     grt.setStatus(2);//此时为下班
                     if (hour < outHour) {
                         grt.setResult(App.RESULTS[2]);
@@ -100,6 +100,7 @@ public class DBUtils {
 
                 }
             }
+            grt.setTime(hour+":"+minute+":"+second);
             App.db.saveOrUpdate(grt);
             Log.i("xq","触发打卡==>"+grt.toString());
             return new String[]{cowt.getDepartment(),cowt.getPosition()};
