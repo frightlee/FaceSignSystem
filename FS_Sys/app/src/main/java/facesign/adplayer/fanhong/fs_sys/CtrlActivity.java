@@ -1,7 +1,6 @@
 package facesign.adplayer.fanhong.fs_sys;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -9,25 +8,24 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.xutils.db.sqlite.WhereBuilder;
 import org.xutils.ex.DbException;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
-import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
-import facesign.adplayer.fanhong.fs_sys.DbTables.GetResultTable;
-import facesign.adplayer.fanhong.fs_sys.DbTables.InputWorkers;
-import facesign.adplayer.fanhong.fs_sys.DbTables.OutputRecord;
+import facesign.adplayer.fanhong.fs_sys.dbtables.ChildOfWorkersTable;
+import facesign.adplayer.fanhong.fs_sys.dbtables.InputWorkers;
+import facesign.adplayer.fanhong.fs_sys.dbtables.OutputRecord;
+
 
 @ContentView(R.layout.activity_ctrl)
 public class CtrlActivity extends AppCompatActivity {
@@ -61,11 +59,24 @@ public class CtrlActivity extends AppCompatActivity {
     private void init() {
         mSharedPref = getApplicationContext().getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE);
     }
+    @Event(value = R.id.open_call,type = CompoundButton.OnCheckedChangeListener.class)
+    private void checkClick(CompoundButton buttonView, boolean isChecked){
+        if(isChecked){
+            App.blackAlarm = true;
+        }else {
+            App.blackAlarm = false;
+        }
+    }
 
-    @Event({R.id.load_in_workers, R.id.set_in_time, R.id.set_out_time, R.id.open_call,R.id.load_out_messages, R.id.change_password,R.id.btn_back})
+    @Event({R.id.load_in_workers, R.id.set_in_time, R.id.set_out_time, R.id.load_out_messages, R.id.change_password, R.id.btn_back})
     private void onClick(View v) {
         switch (v.getId()) {
             case R.id.load_in_workers:
+                try {
+                    App.db.dropTable(ChildOfWorkersTable.class);
+                } catch (DbException e) {
+                    e.printStackTrace();
+                }
                 loadInworkers(CtrlActivity.this);
                 break;
             case R.id.set_in_time:
@@ -73,8 +84,6 @@ public class CtrlActivity extends AppCompatActivity {
                 break;
             case R.id.set_out_time:
                 setOuttime(CtrlActivity.this);
-                break;
-            case R.id.open_call: //打开、关闭报警
                 break;
             case R.id.load_out_messages:
 //                OutputRecord or = new OutputRecord(2017, 10);

@@ -1,4 +1,4 @@
-package facesign.adplayer.fanhong.fs_sys.DbTables;
+package facesign.adplayer.fanhong.fs_sys.dbtables;
 
 import android.os.Environment;
 import android.util.Log;
@@ -37,7 +37,7 @@ public class InputWorkers {
                 book = Workbook.getWorkbook(file);
                 // 获得第一个工作表对象(ecxel中sheet的编号从0开始,0,1,2,3,....)
                 sheet = book.getSheet(0);
-                int i = 2;
+                int i = 2;  //从第三行开始读取
                 cells = new Cell[4];
                 while (true) {
                     // 获取每一行的单元格
@@ -66,8 +66,8 @@ public class InputWorkers {
                     cells[0] = sheet.getCell(0, j);// （列，行）
                     cells[1] = sheet.getCell(1, j);
                     InputWorkersModel model = new InputWorkersModel();
-                    model.setDepartment("");
-                    model.setPosition("");
+                    model.setDepartment("——");
+                    model.setPosition("——");
                     model.setCardNumber(cells[0].getContents());
                     model.setName(cells[1].getContents());
                     model.setFalg(2);
@@ -77,13 +77,14 @@ public class InputWorkers {
                     }
                     j++;
                 }
-                book.close();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (BiffException e) {
                 e.printStackTrace();
             }catch (ArrayIndexOutOfBoundsException e){
                 e.printStackTrace();
+            }finally {
+                book.close();
             }
         }
         return setChildOfWorkers(list);
