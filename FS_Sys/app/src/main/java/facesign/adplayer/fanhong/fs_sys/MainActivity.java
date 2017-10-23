@@ -36,6 +36,9 @@ import com.sun.jna.ptr.ByteByReference;
 import com.zhy.autolayout.AutoLinearLayout;
 import com.zhy.autolayout.AutoRelativeLayout;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONStringer;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
@@ -43,6 +46,7 @@ import org.xutils.x;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import facesign.adplayer.fanhong.fs_sys.adapers.SignCardAdapter;

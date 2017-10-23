@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="facesign.adplayer.fanhong.fs_sys">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -25,7 +27,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CtrlActivity"/>
+        <activity android:name=".CtrlActivity" />
+
+        <service
+            android:name=".BackupService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
