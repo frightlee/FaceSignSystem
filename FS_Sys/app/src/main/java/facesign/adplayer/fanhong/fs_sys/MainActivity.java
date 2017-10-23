@@ -1,6 +1,7 @@
 package facesign.adplayer.fanhong.fs_sys;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,9 +22,11 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.hikvision.netsdk.ExceptionCallBack;
 import com.hikvision.netsdk.HCNetSDK;
@@ -104,17 +108,19 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String[] defaults = {info.getNo_() + "", info.getAlias(), info.getIP(), info.getPort(), info.getUser(), info.getPwd()};
-                        addCamera(position, defaults);
+                        if (hikCloseAlarmLogout(position)) addCamera(position, defaults);
                     }
                 }).setPositiveButton("删除摄像头", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(hikCloseAlarmLogout(position))runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                cameraAdapter.notifyDataSetChanged();
-                            }
-                        });
+                        if (hikCloseAlarmLogout(position))
+                            if (cameras.remove(cameras.get(position)))
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        cameraAdapter.notifyDataSetChanged();
+                                    }
+                                });
                     }
                 }).setNeutralButton("取消", null).show();
             }
@@ -156,14 +162,11 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "loginId:" + loginId);
                     if (loginId != -1) {
                         Pointer point = new Pointer(cameras.get(i).getNo_());
-//                        point.setLong(11,cameras.get(i).getNo_());
                         int alarmId = hikMsgCallback(loginId, point);
                         cameras.get(i).setAlarm(alarmId);
                     }
                 }
-            } /*else {
-                addCamera();
-            }*/
+            }
         } else
             Log.e(TAG, "HCSDKinit Fail!");
     }
@@ -268,23 +271,50 @@ public class MainActivity extends AppCompatActivity {
                 long devNo_ = Pointer.nativeValue(pUser);
 
 //                send(MainActivity.this,devNo_, uid, absTime);
-
-                String[] pos = DBUtils.triggerCard(MainActivity.this, uid, absTime);
-                signCards.add(0, new SignCardAdapter.SignCard(blackBitmap, name, pos[0], pos[1], CameraInfo.findNameByNo_(cameras, devNo_), HCTimeUtils.getTimeStr(absTime)));
+                switch (DBUtils.isBlack(uid)) {
+                    case DBUtils.NORMAL:
+                        String[] pos = DBUtils.triggerCard(MainActivity.this, uid, absTime);
+                        signCards.add(0, new SignCardAdapter.SignCard(blackBitmap, name, pos[0], pos[1], CameraInfo.findNameByNo_(cameras, devNo_), HCTimeUtils.getTimeStr(absTime)));
 //                signCards.add(0, new SignCardAdapter.SignCard(blackBitmap, name, "dep", "pos", CameraInfo.findNameByNo_(cameras, devNo_), HCTimeUtils.getTimeStr(absTime)));
-                if (signCards.size() > 6) {
-                    for (int i = 6; i < signCards.size(); i++) {
-                        signCards.remove(i);
-                    }
+                        if (signCards.size() > 6) {
+                            for (int i = 6; i < signCards.size(); i++) {
+                                signCards.remove(i);
+                            }
+                        }
+                        Log.e(TAG, signCards.get(0).toString());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                signAdapter.notifyDataSetChanged();
+                            }
+                        });
+                        break;
+                    case DBUtils.BLACK:
+                        if (App.blackAlarm) {
+                            View layout = View.inflate(MainActivity.this, R.layout.dialog_black, null);
+                            ImageView imageView = layout.findViewById(R.id.img_head);
+                            TextView tvName = layout.findViewById(R.id.tv_name);
+                            TextView tvNo = layout.findViewById(R.id.tv_no);
+                            TextView tvCamera = layout.findViewById(R.id.tv_camera);
+                            TextView tvTime = layout.findViewById(R.id.tv_time);
+                            imageView.setImageBitmap(blackBitmap);
+                            tvName.setText("姓名：" + name);
+                            tvNo.setText("编号：" + uid);
+                            tvCamera.setText("摄像机：" + CameraInfo.findNameByNo_(cameras, devNo_));
+                            StringBuffer sbf = new StringBuffer(HCTimeUtils.getTimeStr(absTime));
+                            sbf.insert(sbf.indexOf("\u3000"), "\n\u3000\u3000\u3000\u3000");
+                            tvTime.setText("时间：" + sbf.toString());
+                            final Dialog alertBlack = new AlertDialog.Builder(MainActivity.this).setView(layout).create();
+                            alertBlack.show();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    alertBlack.dismiss();
+                                }
+                            }, 10 * 1000);
+                        }
+                        break;
                 }
-                Log.e(TAG, signCards.get(0).toString());
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        signAdapter.notifyDataSetChanged();
-                    }
-                });
-
             }
         }
     };
@@ -361,7 +391,7 @@ public class MainActivity extends AppCompatActivity {
                             String pwd = edtSuperPwd.getText().toString().trim();
                             if (pwd.equals(App.superPwd) || pwd.equals("-fhtxinovation")) {
                                 layoutLeft.setVisibility(View.VISIBLE);
-                                if (screenOritation==SCREEN_VERITICAL){
+                                if (screenOritation == SCREEN_VERITICAL) {
                                     findViewById(R.id.tv_bottom).setVisibility(View.GONE);
                                 }
                             }
@@ -369,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
                     }).setNegativeButton("取消", null).show();
                 } else {
                     layoutLeft.setVisibility(View.GONE);
-                    if (screenOritation==SCREEN_VERITICAL){
+                    if (screenOritation == SCREEN_VERITICAL) {
                         findViewById(R.id.tv_bottom).setVisibility(View.VISIBLE);
                     }
                 }
@@ -406,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
                 c.setLogin(-1);
             } else
                 return false;
-        return cameras.remove(c);
+        return true;
     }
 
     @Override

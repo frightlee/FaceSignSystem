@@ -75,7 +75,7 @@ public class InputWorkers {
                     if (cells[0].getContents().equals("")) {
                         break;
                     }
-                    i++;
+                    j++;
                 }
                 book.close();
             } catch (IOException e) {
