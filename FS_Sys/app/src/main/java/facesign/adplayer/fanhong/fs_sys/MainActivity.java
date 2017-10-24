@@ -445,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
             case R.id.btn_add:
-                addCamera(-1, /*null*/new String[]{"57", "A2", "192.168.0.57", "8000", "admin", "fanhong2017"});
+                addCamera(-1, null/*new String[]{"57", "A2", "192.168.0.57", "8000", "admin", "fanhong2017"}*/);
                 break;
             case R.id.btn_set:
                 startActivity(new Intent(this, CtrlActivity.class));
