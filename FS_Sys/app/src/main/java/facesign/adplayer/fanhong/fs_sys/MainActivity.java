@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -40,6 +41,7 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +53,11 @@ import facesign.adplayer.fanhong.fs_sys.services.MyService;
 import facesign.adplayer.fanhong.fs_sys.utils.CameraCardAdapter;
 import facesign.adplayer.fanhong.fs_sys.utils.DBUtils;
 import facesign.adplayer.fanhong.fs_sys.utils.HCTimeUtils;
+import facesign.adplayer.fanhong.fs_sys.utils.JsonUtils;
 import jna.HCNetSDKByJNA;
 import jna.HCNetSDKJNAInstance;
+
+import static android.R.string.no;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivityLog";
@@ -97,8 +102,12 @@ public class MainActivity extends AppCompatActivity {
 
         soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
         soundPool.load(this, R.raw.warnning, 1);
-        initHCNetSDK();
+
         initViews();
+        SharedPreferences sp = getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE);
+        String cameraStr = sp.getString("cameras", "-1");
+        cameras = JsonUtils.getCameras(cameras, cameraStr);
+        initHCNetSDK();
 
         serviceIntent = new Intent(this, MyService.class);
         startService(serviceIntent);
@@ -121,13 +130,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (hikCloseAlarmLogout(position))
-                            if (cameras.remove(cameras.get(position)))
+                            if (cameras.remove(cameras.get(position))) {
+                                saveCamera();
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        new AlertDialog.Builder(MainActivity.this).setMessage("删除成功！").show();
                                         cameraAdapter.notifyDataSetChanged();
                                     }
                                 });
+                            }
                     }
                 }).setNeutralButton("取消", null).show();
             }
@@ -158,6 +170,26 @@ public class MainActivity extends AppCompatActivity {
     private void initHCNetSDK() {
         if (HCNetSDK.getInstance().NET_DVR_Init()) {
             Log.e(TAG, "HCSDKinit Success!");
+            if (cameras.size() > 0) {
+                for (CameraInfo c : cameras) {
+                    //登录HIK
+                    int loginId = hikLogin(c.getIP(), c.getPort(), c.getUser(), c.getPwd());
+                    c.setLogin(loginId);
+                    Log.e(TAG, "loginId:" + loginId);
+                    if (loginId != -1) {
+                        Pointer point = new Pointer(c.getNo_());
+                        int alarmId = hikMsgCallback(loginId, point);
+                        c.setAlarm(alarmId);
+                        saveCamera();
+                    }
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        cameraAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
         } else
             Log.e(TAG, "HCSDKinit Fail!");
     }
@@ -371,10 +403,19 @@ public class MainActivity extends AppCompatActivity {
                         cameras.get(position).setAlarm(alarmId);
                     if (alarmId != -1)
                         new AlertDialog.Builder(MainActivity.this).setMessage("添加成功!").setPositiveButton("确定", null).show();
+                    saveCamera();
                 } else
                     new AlertDialog.Builder(MainActivity.this).setMessage("登陆失败，请检查后重试!").setPositiveButton("确定", null).show();
             }
         }).setNegativeButton("取消", null).show();
+    }
+
+    private void saveCamera() {
+        SharedPreferences sp = getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        String cameraList = JsonUtils.toJsonString(cameras);
+        editor.putString("cameras", cameraList);
+        editor.apply();
     }
 
     @Event({R.id.btn_add, R.id.btn_more, R.id.btn_set})
@@ -404,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
             case R.id.btn_add:
-                addCamera(-1, /*null*/new String[]{"57", "A2", "192.168.0.57", "8000", "admin", "fanhong2017"});
+                addCamera(-1, null/*new String[]{"57", "A2", "192.168.0.57", "8000", "admin", "fanhong2017"}*/);
                 break;
             case R.id.btn_set:
                 startActivity(new Intent(this, CtrlActivity.class));
