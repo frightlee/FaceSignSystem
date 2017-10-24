@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -371,10 +372,16 @@ public class MainActivity extends AppCompatActivity {
                         cameras.get(position).setAlarm(alarmId);
                     if (alarmId != -1)
                         new AlertDialog.Builder(MainActivity.this).setMessage("添加成功!").setPositiveButton("确定", null).show();
+                    saveCamera();
                 } else
                     new AlertDialog.Builder(MainActivity.this).setMessage("登陆失败，请检查后重试!").setPositiveButton("确定", null).show();
             }
         }).setNegativeButton("取消", null).show();
+    }
+
+    private void saveCamera() {
+        SharedPreferences sp=getSharedPreferences(App.SP_NAME,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sp.edit();
     }
 
     @Event({R.id.btn_add, R.id.btn_more, R.id.btn_set})
