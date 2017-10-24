@@ -30,7 +30,7 @@ public class InputWorkers {
         Sheet sheet = null;
         Cell[] cells = null;
         String stringPath = Environment.getExternalStorageDirectory() + "//inputFS";
-        if(FileUtils.isFileExists(stringPath)){
+        if (FileUtils.isFileExists(stringPath)) {
             String stringPath1 = stringPath + "/" + "workers.xls";
             File file = new File(stringPath1);
             try {
@@ -81,22 +81,23 @@ public class InputWorkers {
                 e.printStackTrace();
             } catch (BiffException e) {
                 e.printStackTrace();
-            }catch (ArrayIndexOutOfBoundsException e){
+            } catch (ArrayIndexOutOfBoundsException e) {
                 e.printStackTrace();
-            }finally {
-                book.close();
+            } finally {
+                if (book != null)
+                    book.close();
             }
         }
         return setChildOfWorkers(list);
     }
 
-    public static int setChildOfWorkers(List<InputWorkersModel> lists){
+    public static int setChildOfWorkers(List<InputWorkersModel> lists) {
         try {
             App.db.dropTable(ChildOfWorkersTable.class);
         } catch (DbException e) {
             e.printStackTrace();
         }
-        for(int i=0;i<lists.size();i++){
+        for (int i = 0; i < lists.size(); i++) {
             ChildOfWorkersTable cow = new ChildOfWorkersTable();
             cow.setDepartment(lists.get(i).getDepartment());
             cow.setPosition(lists.get(i).getPosition());
@@ -112,13 +113,12 @@ public class InputWorkers {
         try {
 //            List<ChildOfWorkersTable> workersList = App.db.selector(ChildOfWorkersTable.class).where("w_name","=","湛洋").findAll();
             List<ChildOfWorkersTable> workersList = App.db.selector(ChildOfWorkersTable.class).findAll();
-            if(workersList!=null){
-                Log.i("xq","找到==>"+workersList.toString());
-                if(workersList.size() > 0){
+            if (workersList != null) {
+                Log.i("xq", "找到==>" + workersList.toString());
+                if (workersList.size() > 0) {
                     return workersList.size();
-                }
-                else {
-                    Log.i("xq","数据库表中未查询到任何数据");
+                } else {
+                    Log.i("xq", "数据库表中未查询到任何数据");
                 }
             }
         } catch (DbException e) {

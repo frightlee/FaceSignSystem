@@ -30,6 +30,7 @@ import facesign.adplayer.fanhong.fs_sys.dbtables.ChildOfWorkersTable;
 import facesign.adplayer.fanhong.fs_sys.dbtables.InputWorkers;
 import facesign.adplayer.fanhong.fs_sys.dbtables.OutputRecord;
 import facesign.adplayer.fanhong.fs_sys.models.OutputExcelModel;
+import facesign.adplayer.fanhong.fs_sys.utils.DBUtils;
 
 
 @ContentView(R.layout.activity_ctrl)
@@ -102,7 +103,8 @@ public class CtrlActivity extends AppCompatActivity {
                 outExcel(CtrlActivity.this);
                 break;
             case R.id.change_password:
-                changeSuperPwd();
+//                changeSuperPwd();
+                DBUtils.addDates();
                 break;
             case R.id.btn_back:
                 finish();
