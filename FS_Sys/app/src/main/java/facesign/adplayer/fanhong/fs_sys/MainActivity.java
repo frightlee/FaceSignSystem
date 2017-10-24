@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import facesign.adplayer.fanhong.fs_sys.adapers.SignCardAdapter;
+import facesign.adplayer.fanhong.fs_sys.models.BlackCards;
 import facesign.adplayer.fanhong.fs_sys.models.CameraInfo;
 import facesign.adplayer.fanhong.fs_sys.utils.CameraCardAdapter;
 import facesign.adplayer.fanhong.fs_sys.utils.DBUtils;
@@ -295,27 +296,33 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case DBUtils.BLACK:
                         if (App.blackAlarm) {
-                            View layout = View.inflate(MainActivity.this, R.layout.dialog_black, null);
-                            ImageView imageView = layout.findViewById(R.id.img_head);
-                            TextView tvName = layout.findViewById(R.id.tv_name);
-                            TextView tvNo = layout.findViewById(R.id.tv_no);
-                            TextView tvCamera = layout.findViewById(R.id.tv_camera);
-                            TextView tvTime = layout.findViewById(R.id.tv_time);
-                            imageView.setImageBitmap(blackBitmap);
-                            tvName.setText("姓名：" + name);
-                            tvNo.setText("编号：" + uid);
-                            tvCamera.setText("摄像机：" + CameraInfo.findNameByNo_(cameras, devNo_));
-                            StringBuffer sbf = new StringBuffer(HCTimeUtils.getTimeStr(absTime));
-                            sbf.insert(sbf.indexOf("\u3000"), "\n\u3000\u3000\u3000\u3000");
-                            tvTime.setText("时间：" + sbf.toString());
-                            final Dialog alertBlack = new AlertDialog.Builder(MainActivity.this).setView(layout).create();
-                            alertBlack.show();
-                            new Handler().postDelayed(new Runnable() {
+                            final BlackCards card = new BlackCards(blackBitmap, name, uid, CameraInfo.findNameByNo_(cameras, devNo_), HCTimeUtils.getTimeStr(absTime));
+                            runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    alertBlack.dismiss();
+                                    View layout = View.inflate(MainActivity.this, R.layout.dialog_black, null);
+                                    ImageView imageView = layout.findViewById(R.id.img_head);
+                                    TextView tvName = layout.findViewById(R.id.tv_name);
+                                    TextView tvNo = layout.findViewById(R.id.tv_no);
+                                    TextView tvCamera = layout.findViewById(R.id.tv_camera);
+                                    TextView tvTime = layout.findViewById(R.id.tv_time);
+                                    imageView.setImageBitmap(card.bitmap);
+                                    tvName.setText("姓名：" + card.name);
+                                    tvNo.setText("编号：" + card.uid);
+                                    tvCamera.setText("摄像机：" + card.camera);
+                                    StringBuffer sbf = new StringBuffer(card.time);
+                                    sbf.insert(sbf.indexOf("\u3000"), "\n\u3000\u3000\u3000\u3000");
+                                    tvTime.setText("时间：" + sbf.toString());
+                                    final Dialog alertBlack = new AlertDialog.Builder(MainActivity.this).setView(layout).create();
+                                    alertBlack.show();
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            alertBlack.dismiss();
+                                        }
+                                    }, 10 * 1000);
                                 }
-                            }, 10 * 1000);
+                            });
                         }
                         break;
                 }
@@ -410,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
             case R.id.btn_add:
-                addCamera(-1, null/*new String[]{"57", "A2", "192.168.0.57", "8000", "admin", "fanhong2017"}*/);
+                addCamera(-1, /*null*/new String[]{"57", "A2", "192.168.0.57", "8000", "admin", "fanhong2017"});
                 break;
             case R.id.btn_set:
                 startActivity(new Intent(this, CtrlActivity.class));

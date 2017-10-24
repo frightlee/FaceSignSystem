@@ -11,14 +11,20 @@ import java.util.List;
 
 public class JsonUtils {
     public static String toJsonString(List<Serializable> list) {
-        String jsonStr="[";
+        String jsonStr = "[";
         for (Serializable s : list) {
-        Field[] keys = list.get(0).getClass().getDeclaredFields();
-            for (int i = 0; i < keys.length; i++) {
-                
+            Field[] fs = s.getClass().getDeclaredFields();
+            for (int i = 0; i < fs.length; i++) {
+                if (i > 0)
+                    jsonStr += ",";
+                try {
+                    jsonStr += "{\"" + fs[i].getName() + "\":\"" + fs[i].get(s) + "\"}";
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    return null;
+                }
             }
         }
-
         return "]";
     }
 }
