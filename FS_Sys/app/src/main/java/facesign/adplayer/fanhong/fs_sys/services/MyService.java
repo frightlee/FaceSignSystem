@@ -45,7 +45,7 @@ public class MyService extends Service {
         /**
          * int year,month,day
          */
-//        DBUtils.doBackUp(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH));
+//        DBUtils.addDates(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH));
     }
 
     @Override
