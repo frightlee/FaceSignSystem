@@ -12,7 +12,7 @@ public class DateTable {
     @Column(name = "id",isId = true,autoGen = true,property = "NOT NULL")
     int id;
     @Column(name = "d_saveddate") //备份过的日期
-    String savedDate;
+    String savedDate;   // "year/month/day"
 
     public int getId() {
         return id;

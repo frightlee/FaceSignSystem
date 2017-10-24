@@ -4,9 +4,14 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.xutils.common.Callback;
 import org.xutils.db.sqlite.WhereBuilder;
 import org.xutils.ex.DbException;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,7 +20,9 @@ import java.util.Set;
 
 import facesign.adplayer.fanhong.fs_sys.App;
 import facesign.adplayer.fanhong.fs_sys.dbtables.ChildOfWorkersTable;
+import facesign.adplayer.fanhong.fs_sys.dbtables.DateTable;
 import facesign.adplayer.fanhong.fs_sys.dbtables.GetResultTable;
+import facesign.adplayer.fanhong.fs_sys.models.BackupsModel;
 import facesign.adplayer.fanhong.fs_sys.models.SignInfo;
 
 
@@ -187,8 +194,83 @@ public class DBUtils {
     }
 
     //将打卡的日期传入数据库
-    public static void addDates(){
+    public static void addDates() {
         Set<String> setA = new HashSet<>();
         Set<String> setB = new HashSet<>();
+        Set<String> setC = new HashSet<>();
+        try {
+            List<GetResultTable> grts = App.db.selector(GetResultTable.class).findAll(); //总的打卡日期
+            List<DateTable> dts = App.db.selector(DateTable.class).findAll();       //备份过的日期
+            if (grts != null) {
+                for (int i = 0; i < grts.size(); i++) {
+                    setA.add(grts.get(i).getYear() + "/" + grts.get(i).getMonth() + "/" + grts.get(i).getDay());
+                }
+                for (int j = 0; j < dts.size(); j++) {
+                    setB.add(dts.get(j).getSavedDate());
+                }
+                Iterator iterator = setA.iterator();
+                while (iterator.hasNext()) {
+                    String s = (String) iterator.next();
+                    if (!setB.contains(s)) {
+                        setC.add(s);
+                    }
+                }
+                postDatas(setC);
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //上传未备份日期的打卡数据
+    public static void postDatas(Set<String> set) {
+        List<Serializable> list = new ArrayList<>();
+        Iterator iterator = set.iterator();
+        while (iterator.hasNext()) {
+            String s = (String) iterator.next();
+            String[] strings = s.split("/");
+            try {
+                List<GetResultTable> grtList = App.db.selector(GetResultTable.class).where("m_year", "=", Integer.parseInt(strings[0]))
+                        .and("m_month", "=", Integer.parseInt(strings[1])).and("m_day", "=", Integer.parseInt(strings[2])).findAll();
+                for (int i = 0; i < grtList.size(); i++) {
+                    ChildOfWorkersTable iwm = App.db.selector(ChildOfWorkersTable.class).
+                            where("w_cardnumber", "=", grtList.get(i).getCardNumber()).findFirst();
+                    BackupsModel model = new BackupsModel();
+                    model.setDepartment(iwm.getDepartment());
+                    model.setPosition(iwm.getPosition());
+                    model.setName(iwm.getName());
+                    model.setIdNumber(grtList.get(i).getCardNumber());
+                    model.setDate(s);
+                    model.setTime(grtList.get(i).getTime());
+                    list.add(model);
+                }
+            } catch (DbException | ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+        }
+        RequestParams params = new RequestParams(App.SAVEURL);
+        params.addBodyParameter("content", JsonUtils.toJsonString(list));
+        params.addBodyParameter("data", new SimpleDateFormat("yyyy年MM月dd日").format(System.currentTimeMillis()));
+        x.http().post(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
     }
 }

@@ -14,17 +14,23 @@ public class JsonUtils {
         String jsonStr = "[";
         for (Serializable s : list) {
             Field[] fs = s.getClass().getDeclaredFields();
+            if (list.indexOf(s) == 0) {
+                jsonStr += "{";
+            } else {
+                jsonStr += ",{";
+            }
             for (int i = 0; i < fs.length; i++) {
                 if (i > 0)
                     jsonStr += ",";
                 try {
-                    jsonStr += "{\"" + fs[i].getName() + "\":\"" + fs[i].get(s) + "\"}";
+                    jsonStr += "\"" + fs[i].getName() + "\":\"" + fs[i].get(s) + "\"";
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                     return null;
                 }
             }
+            jsonStr += "}";
         }
-        return "]";
+        return jsonStr + "]";
     }
 }
