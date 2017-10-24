@@ -15,6 +15,7 @@ import java.util.Set;
 
 import facesign.adplayer.fanhong.fs_sys.App;
 import facesign.adplayer.fanhong.fs_sys.dbtables.ChildOfWorkersTable;
+import facesign.adplayer.fanhong.fs_sys.dbtables.DateTable;
 import facesign.adplayer.fanhong.fs_sys.dbtables.GetResultTable;
 import facesign.adplayer.fanhong.fs_sys.models.SignInfo;
 
@@ -190,5 +191,32 @@ public class DBUtils {
     public static void addDates(){
         Set<String> setA = new HashSet<>();
         Set<String> setB = new HashSet<>();
+        Set<String> setC = new HashSet<>();
+        try {
+            List<GetResultTable> grts = App.db.selector(GetResultTable.class).findAll(); //总的打卡日期
+            List<DateTable> dts = App.db.selector(DateTable.class).findAll();       //备份过的日期
+            for(int i=0;i<grts.size();i++){
+                setA.add(grts.get(i).getYear() + "/" + grts.get(i).getMonth() + "/" + grts.get(i).getDay());
+            }
+            for(int j=0;j<dts.size();j++){
+                setB.add(dts.get(j).getSavedDate());
+            }
+            Iterator iterator = setA.iterator();
+            while (iterator.hasNext()){
+                String s = (String) iterator.next();
+                if(!setB.contains(s)){
+                    setC.add(s);
+                }
+            }
+            postDatas(setC);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void postDatas(Set<String> set){
+        Iterator iterator = set.iterator();
+        while(iterator.hasNext()){
+
+        }
     }
 }
