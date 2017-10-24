@@ -7,14 +7,14 @@ import java.util.List;
  */
 
 public class CameraInfo {
-    private long No_ = -1;
-    private String Alias = "";
-    private String IP = "";
-    private String Port = "";
-    private String User = "";
-    private String Pwd = "";
-    private int Login = -1;
-    private int Alarm = -1;
+     long No_ = -1;
+     String Alias = "";
+     String IP = "";
+     String Port = "";
+     String User = "";
+     String Pwd = "";
+     int Login = -1;
+     int Alarm = -1;
 
     public CameraInfo() {
     }

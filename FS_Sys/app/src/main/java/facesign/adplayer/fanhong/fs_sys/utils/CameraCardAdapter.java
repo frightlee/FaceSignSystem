@@ -65,7 +65,7 @@ public class CameraCardAdapter extends BaseAdapter {
         CameraInfo info = list.get(position);
         holder.tvNo_.setText("编号：" + info.getNo_());
         holder.tvAlias.setText("别名：" + info.getAlias());
-        holder.tvState.setText("状态：" + (info.getAlarm() == -1 ? "未连接" : Html.fromHtml("<font color=\"#00b4ff\">已连接</font>")));
+        holder.tvState.setText((info.getAlarm() == -1 ? "状态：未连接" : Html.fromHtml("<font>状态：</font><font color=\'#00b4ff\'>已连接</font>")));
         return convertView;
     }
 

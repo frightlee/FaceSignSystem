@@ -41,6 +41,7 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +53,11 @@ import facesign.adplayer.fanhong.fs_sys.services.MyService;
 import facesign.adplayer.fanhong.fs_sys.utils.CameraCardAdapter;
 import facesign.adplayer.fanhong.fs_sys.utils.DBUtils;
 import facesign.adplayer.fanhong.fs_sys.utils.HCTimeUtils;
+import facesign.adplayer.fanhong.fs_sys.utils.JsonUtils;
 import jna.HCNetSDKByJNA;
 import jna.HCNetSDKJNAInstance;
+
+import static android.R.string.no;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivityLog";
@@ -98,8 +102,12 @@ public class MainActivity extends AppCompatActivity {
 
         soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
         soundPool.load(this, R.raw.warnning, 1);
-        initHCNetSDK();
+
         initViews();
+        SharedPreferences sp = getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE);
+        String cameraStr = sp.getString("cameras", "-1");
+        cameras = JsonUtils.getCameras(cameras, cameraStr);
+        initHCNetSDK();
 
         serviceIntent = new Intent(this, MyService.class);
         startService(serviceIntent);
@@ -122,13 +130,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (hikCloseAlarmLogout(position))
-                            if (cameras.remove(cameras.get(position)))
+                            if (cameras.remove(cameras.get(position))) {
+                                saveCamera();
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        new AlertDialog.Builder(MainActivity.this).setMessage("删除成功！").show();
                                         cameraAdapter.notifyDataSetChanged();
                                     }
                                 });
+                            }
                     }
                 }).setNeutralButton("取消", null).show();
             }
@@ -159,6 +170,26 @@ public class MainActivity extends AppCompatActivity {
     private void initHCNetSDK() {
         if (HCNetSDK.getInstance().NET_DVR_Init()) {
             Log.e(TAG, "HCSDKinit Success!");
+            if (cameras.size() > 0) {
+                for (CameraInfo c : cameras) {
+                    //登录HIK
+                    int loginId = hikLogin(c.getIP(), c.getPort(), c.getUser(), c.getPwd());
+                    c.setLogin(loginId);
+                    Log.e(TAG, "loginId:" + loginId);
+                    if (loginId != -1) {
+                        Pointer point = new Pointer(c.getNo_());
+                        int alarmId = hikMsgCallback(loginId, point);
+                        c.setAlarm(alarmId);
+                        saveCamera();
+                    }
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        cameraAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
         } else
             Log.e(TAG, "HCSDKinit Fail!");
     }
@@ -380,8 +411,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveCamera() {
-        SharedPreferences sp=getSharedPreferences(App.SP_NAME,Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=sp.edit();
+        SharedPreferences sp = getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        String cameraList = JsonUtils.toJsonString(cameras);
+        editor.putString("cameras", cameraList);
+        editor.apply();
     }
 
     @Event({R.id.btn_add, R.id.btn_more, R.id.btn_set})
