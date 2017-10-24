@@ -29,10 +29,6 @@
         </activity>
         <activity android:name=".CtrlActivity" />
 
-        <service
-            android:name=".BackupService"
-            android:enabled="true"
-            android:exported="true"></service>
     </application>
 
 </manifest>

@@ -5,9 +5,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +25,6 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -36,29 +36,23 @@ import com.sun.jna.ptr.ByteByReference;
 import com.zhy.autolayout.AutoLinearLayout;
 import com.zhy.autolayout.AutoRelativeLayout;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONStringer;
-import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import facesign.adplayer.fanhong.fs_sys.adapers.SignCardAdapter;
 import facesign.adplayer.fanhong.fs_sys.models.BlackCards;
 import facesign.adplayer.fanhong.fs_sys.models.CameraInfo;
+import facesign.adplayer.fanhong.fs_sys.services.MyService;
 import facesign.adplayer.fanhong.fs_sys.utils.CameraCardAdapter;
 import facesign.adplayer.fanhong.fs_sys.utils.DBUtils;
 import facesign.adplayer.fanhong.fs_sys.utils.HCTimeUtils;
 import jna.HCNetSDKByJNA;
 import jna.HCNetSDKJNAInstance;
-
-import static android.R.string.no;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivityLog";
@@ -79,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
     private List<SignCardAdapter.SignCard> signCards = new ArrayList<>();
     private CameraCardAdapter cameraAdapter;
     private SignCardAdapter signAdapter;
+    private SoundPool soundPool;
+    private Intent serviceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,8 +94,14 @@ public class MainActivity extends AppCompatActivity {
         x.view().inject(this);
         String superPwd = getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE).getString("superPwd", App.superPwd);
         App.superPwd = superPwd;
+
+        soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+        soundPool.load(this, R.raw.warnning, 1);
         initHCNetSDK();
         initViews();
+
+        serviceIntent = new Intent(this, MyService.class);
+        startService(serviceIntent);
     }
 
     private void initViews() {
@@ -156,22 +158,6 @@ public class MainActivity extends AppCompatActivity {
     private void initHCNetSDK() {
         if (HCNetSDK.getInstance().NET_DVR_Init()) {
             Log.e(TAG, "HCSDKinit Success!");
-
-//            cameras.add(new CameraInfo(11,"A1", "192.168.0.56", "8000", "admin", "fanhong2017"));
-//            cameras.add(new CameraInfo(12, "A2", "192.168.0.57", "8000", "admin", "fanhong2017"));
-
-            if (cameras.size() > 0) {
-                for (int i = 0; i < cameras.size(); i++) {
-                    int loginId = hikLogin(cameras.get(i).getIP(), cameras.get(i).getPort(), cameras.get(i).getUser(), cameras.get(i).getPwd());
-                    cameras.get(i).setLogin(loginId);
-                    Log.e(TAG, "loginId:" + loginId);
-                    if (loginId != -1) {
-                        Pointer point = new Pointer(cameras.get(i).getNo_());
-                        int alarmId = hikMsgCallback(loginId, point);
-                        cameras.get(i).setAlarm(alarmId);
-                    }
-                }
-            }
         } else
             Log.e(TAG, "HCSDKinit Fail!");
     }
@@ -313,6 +299,7 @@ public class MainActivity extends AppCompatActivity {
                                     StringBuffer sbf = new StringBuffer(card.time);
                                     sbf.insert(sbf.indexOf("\u3000"), "\n\u3000\u3000\u3000\u3000");
                                     tvTime.setText("时间：" + sbf.toString());
+                                    soundPool.play(1, 1, 1, 1, 0, 1);
                                     final Dialog alertBlack = new AlertDialog.Builder(MainActivity.this).setView(layout).create();
                                     alertBlack.show();
                                     new Handler().postDelayed(new Runnable() {
@@ -469,5 +456,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "注销登录失败");
                 }
         }
+
+        stopService(serviceIntent);
     }
 }
