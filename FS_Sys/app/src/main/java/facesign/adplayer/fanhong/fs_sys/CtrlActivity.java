@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,15 +19,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.xutils.common.Callback;
 import org.xutils.ex.DbException;
+import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import facesign.adplayer.fanhong.fs_sys.dbtables.ChildOfWorkersTable;
+import facesign.adplayer.fanhong.fs_sys.dbtables.GetResultTable;
 import facesign.adplayer.fanhong.fs_sys.dbtables.InputWorkers;
 import facesign.adplayer.fanhong.fs_sys.dbtables.OutputRecord;
 import facesign.adplayer.fanhong.fs_sys.models.OutputExcelModel;
@@ -80,7 +85,7 @@ public class CtrlActivity extends AppCompatActivity {
         }
     }
 
-    @Event({R.id.load_in_workers, R.id.set_in_time, R.id.set_out_time, R.id.load_out_messages, R.id.change_password, R.id.btn_back})
+    @Event({R.id.load_in_workers, R.id.set_in_time, R.id.set_out_time, R.id.load_out_messages, R.id.change_password,R.id.do_backups, R.id.btn_back})
     private void onClick(View v) {
         switch (v.getId()) {
             case R.id.load_in_workers:
@@ -103,7 +108,9 @@ public class CtrlActivity extends AppCompatActivity {
                 outExcel(CtrlActivity.this);
                 break;
             case R.id.change_password:
-//                changeSuperPwd();
+                changeSuperPwd();
+                break;
+            case R.id.do_backups:
                 DBUtils.addDates();
                 break;
             case R.id.btn_back:

@@ -2,6 +2,7 @@ package facesign.adplayer.fanhong.fs_sys.dbtables;
 
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.xutils.ex.DbException;
 
@@ -41,29 +42,31 @@ public class OutputRecord {
     //得到导出model的集合List
     public List<OutputExcelModel> getListOfOutputExcel() {
         List<OutputExcelModel> list = new ArrayList<>();
-        Log.i("xq","导出的年月==>"+whichYear+"丶"+whichMonth);
+        Log.i("xq", "导出的年月==>" + whichYear + "丶" + whichMonth);
         try {
 //            List<GetResultTable> grtList = App.db.selector(GetResultTable.class).findAll();
             List<GetResultTable> grtList = App.db.selector(GetResultTable.class)
                     .where("m_year", "=", whichYear)
                     .and("m_month", "=", whichMonth).findAll();
-            Log.i("xq","查询的grtList.size==>"+grtList.size());
-            for (int i = 0; i < grtList.size(); i++) {
-                ChildOfWorkersTable iwm = App.db.selector(ChildOfWorkersTable.class).
-                        where("w_cardnumber", "=", grtList.get(i).getCardNumber()).findFirst();
-                OutputExcelModel model = new OutputExcelModel();
-                model.setDepartment(iwm.getDepartment());
-                model.setPosition(iwm.getPosition());
-                model.setName(iwm.getName());
-                model.setCardNumber(grtList.get(i).getCardNumber());
-                model.setDate(grtList.get(i).getYear() + "/" + grtList.get(i).getMonth() + "/" + grtList.get(i).getDay());
-                model.setTime(grtList.get(i).getTime());
-                model.setWeekday(HCTimeUtils.getWeek(grtList.get(i).getYear(), grtList.get(i).getMonth(), grtList.get(i).getDay()));
-                model.setResult(grtList.get(i).getResult());
-                list.add(model);
+            if (grtList != null && grtList.size() > 0) {
+                Log.i("xq", "查询的grtList.size==>" + grtList.size());
+                for (int i = 0; i < grtList.size(); i++) {
+                    ChildOfWorkersTable iwm = App.db.selector(ChildOfWorkersTable.class).
+                            where("w_cardnumber", "=", grtList.get(i).getCardNumber()).findFirst();
+                    OutputExcelModel model = new OutputExcelModel();
+                    model.setDepartment(iwm.getDepartment());
+                    model.setPosition(iwm.getPosition());
+                    model.setName(iwm.getName());
+                    model.setCardNumber(grtList.get(i).getCardNumber());
+                    model.setDate(grtList.get(i).getYear() + "/" + grtList.get(i).getMonth() + "/" + grtList.get(i).getDay());
+                    model.setTime(grtList.get(i).getTime());
+                    model.setWeekday(HCTimeUtils.getWeek(grtList.get(i).getYear(), grtList.get(i).getMonth(), grtList.get(i).getDay()));
+                    model.setResult(grtList.get(i).getResult());
+                    list.add(model);
+                }
+                Log.i("xq", list.toString());
+                Log.i("xq", "导出的list.size==>" + list.size());
             }
-            Log.i("xq",list.toString());
-            Log.i("xq","导出的list.size==>"+list.size());
         } catch (DbException e) {
             e.printStackTrace();
         }
@@ -76,7 +79,7 @@ public class OutputRecord {
         int wid = 15;
         WritableWorkbook wwb = null;
         Label label = null;
-        String[] titles = new String[]{"序号","部门", "职位", "名字", "证件号", "日期", "时间", "星期几", "打卡结果"};
+        String[] titles = new String[]{"序号", "部门", "职位", "名字", "证件号", "日期", "时间", "星期几", "打卡结果"};
         String filePath1 = Environment.getExternalStorageDirectory() + "//inputFS";
         if (FileUtils.isFileExists(filePath1)) {
             String filePath2 = filePath1 + "/" + tableName + ".xls";
@@ -86,7 +89,7 @@ public class OutputRecord {
                 WritableSheet ws = wwb.createSheet(tableName, 0);
                 ws.mergeCells(0, 0, titles.length, 0);
                 //设置表名
-                label = new Label(0,0,tableName);
+                label = new Label(0, 0, tableName);
                 ws.addCell(label);
                 WritableCellFormat wc = new WritableCellFormat();
                 wc.setAlignment(Alignment.CENTRE);
@@ -94,12 +97,12 @@ public class OutputRecord {
                     label = new Label(i, 1, titles[i]);
                     ws.addCell(label);
                 }
-                ws.setColumnView(2,wid);
-                ws.setColumnView(4,wid+3);
-                ws.setColumnView(5,wid);
-                ws.setColumnView(6,wid);
+                ws.setColumnView(2, wid);
+                ws.setColumnView(4, wid + 3);
+                ws.setColumnView(5, wid);
+                ws.setColumnView(6, wid);
                 for (int i = 0; i < list.size(); i++) {
-                    label = new Label(0,i+2,(i+1)+"");
+                    label = new Label(0, i + 2, (i + 1) + "");
                     ws.addCell(label);
                     label = new Label(1, i + 2, list.get(i).getDepartment());
                     ws.addCell(label);
