@@ -73,7 +73,7 @@ public class ChildOfWorkersTable {
 
     @Override
     public String toString() {
-        return "ChildOfWorkersTable{" +
+        return "{" +
                 "id=" + id +
                 ", department='" + department + '\'' +
                 ", position='" + position + '\'' +

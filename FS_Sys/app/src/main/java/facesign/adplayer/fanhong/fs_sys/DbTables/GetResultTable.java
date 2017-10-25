@@ -115,7 +115,7 @@ public class GetResultTable {
 
     @Override
     public String toString() {
-        return "GetResultTable{" +
+        return "{" +
                 "id=" + id +
                 ", cardNumber='" + cardNumber + '\'' +
                 ", year=" + year +

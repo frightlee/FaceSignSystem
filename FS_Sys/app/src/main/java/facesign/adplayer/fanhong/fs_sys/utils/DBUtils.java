@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xutils.common.Callback;
 import org.xutils.db.sqlite.WhereBuilder;
 import org.xutils.ex.DbException;
@@ -195,7 +197,7 @@ public class DBUtils {
     }
 
     //将打卡的日期传入数据库
-    public static void addDates(/*int year,int month,int day*/) {    //启动服务时调用
+    public static void addDates(int year,int month,int day) {    //启动服务时调用
         Set<String> setA = new HashSet<>();
         Set<String> setB = new HashSet<>();
         Set<String> setC = new HashSet<>();
@@ -206,10 +208,10 @@ public class DBUtils {
                 for (int i = 0; i < grts.size(); i++) {
                     setA.add(grts.get(i).getYear() + "/" + grts.get(i).getMonth() + "/" + grts.get(i).getDay());
                 }
-//                String today = year+"/"+month+"/"+day;
-//                if(setA.contains(today)){
-//                    setA.remove(today);
-//                }
+                String today = year+"/"+month+"/"+day;
+                if(setA.contains(today)){
+                    setA.remove(today);
+                }
                 if (dts != null) {
                     for (int j = 0; j < dts.size(); j++) {
                         setB.add(dts.get(j).getSavedDate());
@@ -232,9 +234,9 @@ public class DBUtils {
     }
 
     //上传未备份日期的打卡数据
-    public static void postDatas(Set<String> set) {
-        List<Serializable> list = new ArrayList<>();
-        final Iterator iterator = set.iterator();
+    public static void postDatas(final Set<String> set) {
+        List<BackupsModel> list = new ArrayList<>();
+        Iterator iterator = set.iterator();
         while (iterator.hasNext()) {
             String s = (String) iterator.next();
             String[] strings = s.split("/");
@@ -260,19 +262,34 @@ public class DBUtils {
         RequestParams params = new RequestParams(App.SAVEURL);
         String content =  JsonUtils.toJsonString(list);
         Log.i("xq","content==>"+content);
-        params.addBodyParameter("conent",content);
-        params.addBodyParameter("date", new SimpleDateFormat("yyyy年MM月dd日").format(System.currentTimeMillis()));
+        params.addParameter("conent",content);
+        params.addParameter("date", new SimpleDateFormat("yyyy_MM_dd").format(System.currentTimeMillis()));
         x.http().post(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                while (iterator.hasNext()){
-                    DateTable dt = new DateTable();
-                    dt.setSavedDate((String) iterator.next());
-                    try {
-                        App.db.saveOrUpdate(dt);
-                    } catch (DbException e) {
-                        e.printStackTrace();
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    if(jsonObject.getString("cw").equals("1")){
+                        Log.i("xq","备份success！");
+                        Iterator iterator1 = set.iterator();
+                        while (iterator1.hasNext()){
+                            DateTable dt = new DateTable();
+                            dt.setSavedDate((String) iterator1.next());
+
+                            App.db.saveOrUpdate(dt);
+                        }
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (DbException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    List<DateTable> list1 = App.db.selector(DateTable.class).findAll();
+                    Log.i("xq","已备份过的日期==>"+list1.toString());
+                } catch (DbException e) {
+                    e.printStackTrace();
                 }
             }
 

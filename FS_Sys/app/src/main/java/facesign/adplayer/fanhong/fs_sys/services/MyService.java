@@ -24,14 +24,14 @@ public class MyService extends Service {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                long currenttime = System.currentTimeMillis();
+//                long currenttime = System.currentTimeMillis();
                 Calendar c = Calendar.getInstance();
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
                 if (hour == 12 && minute == 0)
                     doCheckBackUp(c);
                 try {
-                    thread.sleep(1 * 60 * 1000);
+                    thread.sleep(60 * 60 * 1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -45,7 +45,7 @@ public class MyService extends Service {
         /**
          * int year,month,day
          */
-//        DBUtils.addDates(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH));
+        DBUtils.addDates(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH));
     }
 
     @Override
