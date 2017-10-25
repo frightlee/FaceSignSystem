@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
         soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
         soundPool.load(this, R.raw.warnning, 1);
+        soundPool.load(this, R.raw.ding, 1);
 
         initViews();
         SharedPreferences sp = getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE);
@@ -299,7 +300,8 @@ public class MainActivity extends AppCompatActivity {
                         String[] pos = DBUtils.triggerCard(MainActivity.this, uid, absTime);
                         signCards.add(0, new SignCardAdapter.SignCard(blackBitmap, name, pos[0], pos[1], CameraInfo.findNameByNo_(cameras, devNo_), HCTimeUtils.getTimeStr(absTime)));
 //                signCards.add(0, new SignCardAdapter.SignCard(blackBitmap, name, "dep", "pos", CameraInfo.findNameByNo_(cameras, devNo_), HCTimeUtils.getTimeStr(absTime)));
-                        if (signCards.size() > 6) {
+                        soundPool.play(2, 1, 1, 1, 0, 1);
+						if (signCards.size() > 6) {
                             for (int i = 6; i < signCards.size(); i++) {
                                 signCards.remove(i);
                             }
