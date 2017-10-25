@@ -80,7 +80,7 @@ public class OutputExcelModel {
 
     @Override
     public String toString() {
-        return "OutputExcelModel{" +
+        return "{" +
                 "department='" + department + '\'' +
                 ", position='" + position + '\'' +
                 ", name='" + name + '\'' +

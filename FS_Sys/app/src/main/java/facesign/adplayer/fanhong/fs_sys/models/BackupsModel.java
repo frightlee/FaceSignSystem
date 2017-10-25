@@ -1,12 +1,11 @@
 package facesign.adplayer.fanhong.fs_sys.models;
 
-import java.io.Serializable;
 
 /**
  * Created by Administrator on 2017/10/24.
  */
 
-public class BackupsModel implements Serializable{
+public class BackupsModel{
     String department;
     String position;
     String name;

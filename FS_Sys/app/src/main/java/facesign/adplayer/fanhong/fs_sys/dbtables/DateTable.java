@@ -29,4 +29,12 @@ public class DateTable {
     public void setSavedDate(String savedDate) {
         this.savedDate = savedDate;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + id +
+                ", savedDate='" + savedDate + '\'' +
+                '}';
+    }
 }
