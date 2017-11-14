@@ -19,6 +19,17 @@ import static android.R.id.list;
  */
 
 public class JsonUtils {
+    public static String getJsonValue(String json, String key) {
+        String result = "";
+        try {
+            JSONObject o = new JSONObject(json);
+            result = o.getString(key);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public static String toJsonString(List list) {
         String jsonStr = "[";
         for (Object s : list) {

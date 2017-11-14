@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="220px"
     android:layout_height="120px"
     android:layout_centerVertical="true"
@@ -14,7 +14,7 @@
         android:layout_centerVertical="true"
         android:src="@mipmap/shexiangtou" />
 
-    <com.zhy.autolayout.AutoLinearLayout
+    <autolayout.AutoLinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -47,10 +47,10 @@
             android:text="状态：未连接"
             android:textColor="@color/black"
             android:textSize="14px" />
-    </com.zhy.autolayout.AutoLinearLayout>
+    </autolayout.AutoLinearLayout>
     <TextView
         android:layout_width="220px"
         android:layout_height="2px"
         android:background="@color/black"
         android:layout_alignParentBottom="true"/>
-</com.zhy.autolayout.AutoRelativeLayout>
+</autolayout.AutoRelativeLayout>

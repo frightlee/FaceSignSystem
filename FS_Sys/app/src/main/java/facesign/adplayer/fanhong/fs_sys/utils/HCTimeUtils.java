@@ -36,6 +36,20 @@ public class HCTimeUtils {
         if (w.equals("second"))
             return (((time) >> 0) & 63);
         return -1;
+    }public static String getDateTime(int time, int s) {
+        switch (s) {
+            case 1:
+                int year = (((time) >> 26) + 2000);
+                int month = (((time) >> 22) & 15);
+                int day = (((time) >> 17) & 31);
+                return year + "-" + month + "-" + day;
+            case 2:
+                int hour = (((time) >> 12) & 31);
+                int minute = (((time) >> 6) & 63);
+                int second = (((time) >> 0) & 63);
+                return hour + ":" + minute + ":" + second;
+        }
+        return "";
     }
     public static String getWeek(int year,int month,int day) {
         String[] weekDays = {"星期日", "星期一", "星期二", "星期三" ,"星期四", "星期五", "星期六"};
@@ -46,13 +60,19 @@ public class HCTimeUtils {
             w = 0;
         return weekDays[w];
     }
-//    public static int getStatus(int time,int start){
-//        int year=getDateTime(time,"year"),
-//            month=getDateTime(time,"month"),
-//            day=getDateTime(time,"day"),
-//            hour=getDateTime(time,"hour"),
-//            minute=getDateTime(time,"minute");
-//        if (hour>=4)
-//        return -1;
-//    }
+
+    public static boolean inXSeconds(int absTime, int lastTime, int x) {
+        int m1 = (((absTime) >> 6) & 63);
+        int s1 = (((absTime) >> 0) & 63);
+        int m2 = (((lastTime) >> 6) & 63);
+        int s2 = (((lastTime) >> 0) & 63);
+        if (m1 == m2) {
+            if (s1 - s2 < x)
+                return true;
+        } else if ((m1 - m2 == 1) || (m2 == 59 && m1 == 0)) {
+            if (s1 + 60 - s2 < x)
+                return true;
+        }
+        return false;
+    }
 }

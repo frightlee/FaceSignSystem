@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.zhy.autolayout.AutoLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<autolayout.AutoLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,18 +8,18 @@
     tools:context="facesign.adplayer.fanhong.fs_sys.MainActivity">
 
 
-    <com.zhy.autolayout.AutoRelativeLayout
+    <autolayout.AutoRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <com.zhy.autolayout.AutoLinearLayout
+        <autolayout.AutoLinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/back_blue"
             android:orientation="vertical">
 
-            <com.zhy.autolayout.AutoLinearLayout
+            <autolayout.AutoLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="134.4px"
                 android:gravity="center">
@@ -36,7 +36,7 @@
                     android:text="@string/system_name"
                     android:textColor="@color/black"
                     android:textSize="43px" />
-            </com.zhy.autolayout.AutoLinearLayout>
+            </autolayout.AutoLinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -51,7 +51,7 @@
 
             </android.support.v7.widget.RecyclerView>
 
-        </com.zhy.autolayout.AutoLinearLayout>
+        </autolayout.AutoLinearLayout>
 
         <Button
             android:id="@+id/btn_more"
@@ -59,13 +59,11 @@
             android:layout_height="70px"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:alpha="0.45"
-            android:background="@mipmap/up"
-            android:backgroundTint="@color/black" />
-    </com.zhy.autolayout.AutoRelativeLayout>
+            android:background="@mipmap/up"/>
+    </autolayout.AutoRelativeLayout>
 
 
-        <com.zhy.autolayout.AutoRelativeLayout
+        <autolayout.AutoRelativeLayout
             android:id="@+id/layout_left"
             android:layout_width="match_parent"
             android:layout_height="270px"
@@ -73,12 +71,12 @@
             android:background="@color/white"
             android:visibility="gone">
 
-            <com.zhy.autolayout.AutoLinearLayout
+            <autolayout.AutoLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <com.zhy.autolayout.AutoRelativeLayout
+                <autolayout.AutoRelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/gray1"
@@ -87,32 +85,32 @@
 
                     <Button
                         android:id="@+id/btn_add"
-                        android:layout_width="68px"
-                        android:layout_height="68px"
+                        android:layout_width="38px"
+                        android:layout_height="38px"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="11px"
                         android:background="@mipmap/tianjia" />
 
                     <Button
                         android:id="@+id/btn_set"
-                        android:layout_width="68px"
-                        android:layout_height="68px"
+                        android:layout_width="38px"
+                        android:layout_height="38px"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="11px"
                         android:background="@mipmap/shezhi" />
-                </com.zhy.autolayout.AutoRelativeLayout>
+                </autolayout.AutoRelativeLayout>
 
                 <GridView
                     android:id="@+id/lv_cameras"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-            </com.zhy.autolayout.AutoLinearLayout>
-        </com.zhy.autolayout.AutoRelativeLayout>
+            </autolayout.AutoLinearLayout>
+        </autolayout.AutoRelativeLayout>
     <TextView
         android:id="@+id/tv_bottom"
         android:layout_width="match_parent"
         android:layout_height="57.6px"
         android:layout_alignParentBottom="true"
         android:background="@color/back_blue" />
-</com.zhy.autolayout.AutoLinearLayout>
+</autolayout.AutoLinearLayout>

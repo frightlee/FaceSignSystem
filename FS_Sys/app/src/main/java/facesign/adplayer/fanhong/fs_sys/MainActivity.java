@@ -20,8 +20,10 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -34,30 +36,26 @@ import com.hikvision.netsdk.HCNetSDK;
 import com.hikvision.netsdk.NET_DVR_DEVICEINFO_V30;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.ByteByReference;
-import com.zhy.autolayout.AutoLinearLayout;
-import com.zhy.autolayout.AutoRelativeLayout;
 
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import autolayout.AutoRelativeLayout;
+import autolayout.config.AutoLayoutConifg;
 import facesign.adplayer.fanhong.fs_sys.adapers.SignCardAdapter;
-import facesign.adplayer.fanhong.fs_sys.models.BlackCards;
 import facesign.adplayer.fanhong.fs_sys.models.CameraInfo;
-import facesign.adplayer.fanhong.fs_sys.services.MyService;
 import facesign.adplayer.fanhong.fs_sys.utils.CameraCardAdapter;
-import facesign.adplayer.fanhong.fs_sys.utils.DBUtils;
 import facesign.adplayer.fanhong.fs_sys.utils.HCTimeUtils;
 import facesign.adplayer.fanhong.fs_sys.utils.JsonUtils;
 import jna.HCNetSDKByJNA;
 import jna.HCNetSDKJNAInstance;
-
-import static android.R.string.no;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivityLog";
@@ -72,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
     private AutoRelativeLayout layoutLeft;
     @ViewInject(R.id.lv_cameras)
     private AbsListView lvCameras;//ListView or GridView
+    @ViewInject(R.id.btn_more)
+    private Button btnMore;
 
     //ip,port,user,pwd
     private List<CameraInfo> cameras = new ArrayList<>();
@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
     private CameraCardAdapter cameraAdapter;
     private SignCardAdapter signAdapter;
     private SoundPool soundPool;
-    private Intent serviceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,9 +91,11 @@ public class MainActivity extends AppCompatActivity {
         if (d.getWidth() < d.getHeight()) {
             setContentView(R.layout.activity_main_vertical);
             screenOritation = SCREEN_VERITICAL;
+            AutoLayoutConifg.getInstance().useDynamicDesignSize(1080, 1920);
         } else {
             setContentView(R.layout.activity_main);
             screenOritation = SCREEN_HORIZONTAL;
+            AutoLayoutConifg.getInstance().useDynamicDesignSize(1920, 1080);
         }
         x.view().inject(this);
         String superPwd = getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE).getString("superPwd", App.superPwd);
@@ -109,9 +110,6 @@ public class MainActivity extends AppCompatActivity {
         String cameraStr = sp.getString("cameras", "-1");
         cameras = JsonUtils.getCameras(cameras, cameraStr);
         initHCNetSDK();
-
-        serviceIntent = new Intent(this, MyService.class);
-        startService(serviceIntent);
     }
 
     private void initViews() {
@@ -166,6 +164,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         recyclerView1.setLayoutManager(lmanager);
+
+        AlphaAnimation anim = new AlphaAnimation(0.0f, 0.5f);
+        anim.setDuration(2000);
+        anim.setRepeatMode(AlphaAnimation.REVERSE);
+        anim.setRepeatCount(AlphaAnimation.INFINITE);
+        btnMore.startAnimation(anim);
     }
 
     private void initHCNetSDK() {
@@ -182,6 +186,9 @@ public class MainActivity extends AppCompatActivity {
                         int alarmId = hikMsgCallback(loginId, point);
                         c.setAlarm(alarmId);
                         saveCamera();
+                    } else {
+                        new AlertDialog.Builder(MainActivity.this).setMessage("可能由于网络原因连接未成功，请手动确认！").setPositiveButton("确认", null).show();
+                        return;
                     }
                 }
                 runOnUiThread(new Runnable() {
@@ -263,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
         return hcalarm;
     }
 
+    //    private List<Long> vt = new ArrayList<>();
     private HCNetSDKByJNA.FMSGCallBack msgCallback = new HCNetSDKByJNA.FMSGCallBack() {
 
         @Override
@@ -272,16 +280,16 @@ public class MainActivity extends AppCompatActivity {
             {
                 HCNetSDKByJNA.NET_VCA_FACESNAP_MATCH_ALARM alarmInfo = new HCNetSDKByJNA.NET_VCA_FACESNAP_MATCH_ALARM(pAlarmInfo);
                 alarmInfo.read();
-                final float fSimilarity = alarmInfo.fSimilarity;//对比相似度
+//                final float fSimilarity = alarmInfo.fSimilarity;//对比相似度
                 HCNetSDKByJNA.NET_VCA_FACESNAP_INFO_ALARM snapInfo = alarmInfo.struSnapInfo;//人脸抓拍上传信息
                 HCNetSDKByJNA.NET_VCA_BLACKLIST_INFO_ALARM blackListInfo = alarmInfo.struBlackListInfo;//黑名单(预存)
-                ByteByReference snapPicBuffer = alarmInfo.pSnapPicBuffer;//抓拍图片
+//                ByteByReference snapPicBuffer = alarmInfo.pSnapPicBuffer;//抓拍图片
 
-                int absTime = snapInfo.dwAbsTime;
+                final int absTime = snapInfo.dwAbsTime;
 
                 ByteByReference blackPicBuffer = blackListInfo.pBuffer1;//黑名单图片
                 byte[] blackPicBy = blackPicBuffer.getPointer().getByteArray(0L, blackListInfo.dwBlackListPicLen);//
-                final Bitmap blackBitmap = BitmapFactory.decodeByteArray(blackPicBy, 0, blackPicBy.length);//黑名单图片
+                Bitmap blackBitmap = BitmapFactory.decodeByteArray(blackPicBy, 0, blackPicBy.length);//黑名单图片
 
                 HCNetSDKByJNA.NET_VCA_BLACKLIST_INFO blackInfo = blackListInfo.struBlackListInfo;//黑名单基本信息
                 HCNetSDKByJNA.NET_VCA_HUMAN_ATTRIBUTE attribute = blackInfo.struAttribute;//人员信息
@@ -293,73 +301,143 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 long devNo_ = Pointer.nativeValue(pUser);
+                final showCardsInfo card = new showCardsInfo(blackBitmap, name, uid, CameraInfo.findNameByNo_(cameras, devNo_), HCTimeUtils.getTimeStr(absTime));
 
-//                send(MainActivity.this,devNo_, uid, absTime);
-                switch (DBUtils.isBlack(uid)) {
-                    case DBUtils.NORMAL:
-                        String[] pos = DBUtils.triggerCard(MainActivity.this, uid, absTime);
-                        signCards.add(0, new SignCardAdapter.SignCard(blackBitmap, name, pos[0], pos[1], CameraInfo.findNameByNo_(cameras, devNo_), HCTimeUtils.getTimeStr(absTime)));
-//                signCards.add(0, new SignCardAdapter.SignCard(blackBitmap, name, "dep", "pos", CameraInfo.findNameByNo_(cameras, devNo_), HCTimeUtils.getTimeStr(absTime)));
-                        soundPool.play(2, 1, 1, 1, 0, 1);
-						if (signCards.size() > 6) {
-                            for (int i = 6; i < signCards.size(); i++) {
-                                signCards.remove(i);
-                            }
-                        }
-                        Log.e(TAG, signCards.get(0).toString());
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                signAdapter.notifyDataSetChanged();
-                            }
-                        });
-                        break;
-                    case DBUtils.BLACK:
-                        if (App.blackAlarm) {
-                            final BlackCards card = new BlackCards(blackBitmap, name, uid, CameraInfo.findNameByNo_(cameras, devNo_), HCTimeUtils.getTimeStr(absTime));
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    View layout = View.inflate(MainActivity.this, R.layout.dialog_black, null);
-                                    ImageView imageView = layout.findViewById(R.id.img_head);
-                                    TextView tvName = layout.findViewById(R.id.tv_name);
-                                    TextView tvNo = layout.findViewById(R.id.tv_no);
-                                    TextView tvCamera = layout.findViewById(R.id.tv_camera);
-                                    TextView tvTime = layout.findViewById(R.id.tv_time);
-                                    imageView.setImageBitmap(card.bitmap);
-                                    tvName.setText("姓名：" + card.name);
-                                    tvNo.setText("编号：" + card.uid);
-                                    tvCamera.setText("摄像机：" + card.camera);
-                                    StringBuffer sbf = new StringBuffer(card.time);
-                                    sbf.insert(sbf.indexOf("\u3000"), "\n\u3000\u3000\u3000\u3000");
-                                    tvTime.setText("时间：" + sbf.toString());
-                                    soundPool.play(1, 1, 1, 1, 0, 1);
-                                    final Dialog alertBlack = new AlertDialog.Builder(MainActivity.this).setView(layout).create();
-                                    alertBlack.show();
-                                    new Handler().postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            alertBlack.dismiss();
-                                        }
-                                    }, 10 * 1000);
+                if (uid.equals(App.lastUid))
+                    if (HCTimeUtils.inXSeconds(absTime, App.lastTime, 5))
+                        return;
+
+//                vt.add(System.currentTimeMillis());
+                RequestParams params = new RequestParams(App.SAVEURL);
+                params.addParameter("uid", uid);//证件号
+                params.addParameter("_No", devNo_);//摄像机编号
+                params.addParameter("alias", CameraInfo.findNameByNo_(cameras, devNo_));//摄像机别名
+                params.addParameter("date", HCTimeUtils.getDateTime(absTime, 1));//年-月-日
+                params.addParameter("time", HCTimeUtils.getDateTime(absTime, 2));//时:分:秒
+                x.http().post(params, new Callback.CommonCallback<String>() {
+                    @Override
+                    public void onSuccess(String result) {
+//                        vt.add(System.currentTimeMillis());
+                        Log.e(TAG, "json=" + result);
+                        int r = Integer.parseInt(JsonUtils.getJsonValue(result, "result"));
+                        switch (r) {
+                            case 1:
+                                String data = JsonUtils.getJsonValue(result, "data");
+                                String department = JsonUtils.getJsonValue(data, "department");
+                                String position = JsonUtils.getJsonValue(data, "position");
+                                SignCardAdapter.SignCard signCard = new SignCardAdapter.SignCard(card.bitmap, card.name, department, position, card.alias, card.time);
+                                signCards.add(0, signCard);
+                                soundPool.play(2, 1, 1, 1, 0, 1);
+                                if (signCards.size() > 6) {
+                                    for (int i = 6; i < signCards.size(); i++) {
+                                        signCards.remove(i);
+                                    }
                                 }
-                            });
+                                Log.e(TAG, signCards.get(0).toString());
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+//                                        showTimeSpend("white", absTime);
+                                        signAdapter.notifyDataSetChanged();
+                                    }
+                                });
+                                break;
+                            case 2:
+                                if (App.blackAlarm) {
+//                                    showTimeSpend("black", absTime);
+                                    alarmBlack(card.bitmap, card.name, card.uid, card.alias, card.time);
+                                }
+                                break;
                         }
-                        break;
-                }
+                    }
+
+                    @Override
+                    public void onError(Throwable ex, boolean isOnCallback) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(CancelledException cex) {
+
+                    }
+
+                    @Override
+                    public void onFinished() {
+
+                    }
+                });
+                App.lastUid = uid;
+                App.lastTime = absTime;
             }
         }
     };
 
+//    private void showTimeSpend(String log, int absTime) {
+//        Log.i(TAG, "shotime(" + log + "):" + vt.toString());
+//        String str = "抓拍时间：";
+//        str += HCTimeUtils.getTimeStr(absTime);
+//        Calendar c = Calendar.getInstance();
+//        c.setTimeInMillis(vt.get(0));
+//        str += "\n获取到信号：" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND) + ":" + c.get(Calendar.MILLISECOND);
+//        str += "\n数据建模：+" + (vt.get(1) - vt.get(0));
+//        str += "\n数据分析：+" + (vt.get(2) - vt.get(1));
+//        str += "\n后台回复：+" + (vt.get(3) - vt.get(2));
+//        new AlertDialog.Builder(this).setMessage(str).show();
+//    }
+
+    private class showCardsInfo {
+        Bitmap bitmap;
+        String name, uid, alias, time;
+
+        public showCardsInfo(Bitmap bitmap, String name, String uid, String alias, String time) {
+            this.bitmap = bitmap;
+            this.name = name;
+            this.uid = uid;
+            this.alias = alias;
+            this.time = time;
+        }
+    }
+
+    private void alarmBlack(final Bitmap blackBitmap, final String name, final String uid, final String alias, final String timeStr) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                View layout = View.inflate(MainActivity.this, R.layout.dialog_black, null);
+                ImageView imageView = layout.findViewById(R.id.img_head);
+                TextView tvName = layout.findViewById(R.id.tv_name);
+                TextView tvNo = layout.findViewById(R.id.tv_no);
+                TextView tvCamera = layout.findViewById(R.id.tv_camera);
+                TextView tvTime = layout.findViewById(R.id.tv_time);
+                imageView.setImageBitmap(blackBitmap);
+                tvName.setText("姓名：" + name);
+                tvNo.setText("编号：" + uid);
+                tvCamera.setText("摄像机：" + alias);
+                StringBuffer sbf = new StringBuffer(timeStr);
+                sbf.insert(sbf.indexOf("\u3000"), "\n\u3000\u3000\u3000\u3000");
+                tvTime.setText("时间：" + sbf.toString());
+                soundPool.play(1, 1, 1, 1, 0, 1);
+                final Dialog alertBlack = new AlertDialog.Builder(MainActivity.this).setView(layout).create();
+                alertBlack.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        alertBlack.dismiss();
+                    }
+                }, 10 * 1000);
+            }
+        });
+    }
+
     private void addCamera(final int position, String[] defaultStr) {
-        AutoLinearLayout layout_add_dialog = new AutoLinearLayout(this);
+        LinearLayout layout_add_dialog = new LinearLayout(this);
         ScrollView scrollView = new ScrollView(this);
         final EditText[] edts = new EditText[6];
         String[] hints = {"编号", "别名", "IP", "port", "user", "password"};
         for (int i = 0; i < 6; i++) {
             edts[i] = new EditText(this);
-            edts[i].setHintTextColor(0xededed);
+//            edts[i].setHintTextColor(0xededed);
             edts[i].setHint(hints[i]);
+//            edts[i].setEms(10);
             if (defaultStr != null)
                 edts[i].setText(defaultStr[i]);
             layout_add_dialog.addView(edts[i]);
@@ -455,14 +533,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-//        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//            }
-        super.onResume();
-    }
-
     private boolean hikCloseAlarmLogout(int position) {
         CameraInfo c = cameras.get(position);
         if (c.getAlarm() != -1)
@@ -494,12 +564,9 @@ public class MainActivity extends AppCompatActivity {
                 if (HCNetSDKJNAInstance.getInstance().NET_DVR_Logout(c.getLogin())) {
                     Log.e(TAG, "login:" + c.getLogin() + "-->注销登录成功");
                     c.setLogin(-1);
-//                    cameras.remove(c);
                 } else {
                     Log.e(TAG, "注销登录失败");
                 }
         }
-
-        stopService(serviceIntent);
     }
 }

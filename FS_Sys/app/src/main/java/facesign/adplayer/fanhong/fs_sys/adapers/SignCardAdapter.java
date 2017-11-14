@@ -9,13 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zhy.autolayout.utils.AutoUtils;
-
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.List;
 
+import autolayout.utils.AutoUtils;
 import facesign.adplayer.fanhong.fs_sys.MainActivity;
 import facesign.adplayer.fanhong.fs_sys.R;
 
@@ -68,7 +67,7 @@ public class SignCardAdapter extends RecyclerView.Adapter<SignCardAdapter.ViewHo
         holder.tvPosition.setText("职位：" + info.position);
         holder.tvCamera.setText("摄像机：" + info.camera);
         String time = info.time;
-        if (screenOritation == MainActivity.SCREEN_VERITICAL && position != 0) {
+        if (position != 0) {
             StringBuffer sbf = new StringBuffer(time);
             sbf.insert(sbf.indexOf("\u3000"), "\n\u3000\u3000\u3000\u3000");
             time = sbf.toString();

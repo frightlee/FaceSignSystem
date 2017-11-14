@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.zhy.autolayout.AutoLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<autolayout.AutoLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/lt_orange"
@@ -19,7 +19,7 @@
         android:layout_height="1px"
         android:background="@color/black" />
 
-    <com.zhy.autolayout.AutoLinearLayout
+    <autolayout.AutoLinearLayout
         android:layout_width="wrap_content"
         android:gravity="center"
         android:layout_height="wrap_content">
@@ -32,7 +32,7 @@
             android:layout_marginTop="80px"
             android:src="@mipmap/liantong" />
 
-        <com.zhy.autolayout.AutoLinearLayout
+        <autolayout.AutoLinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="20px"
@@ -71,6 +71,6 @@
                 android:text="时间：2017/10/19\n　08:23:52"
                 android:textColor="@color/black"
                 android:textSize="40px" />
-        </com.zhy.autolayout.AutoLinearLayout>
-    </com.zhy.autolayout.AutoLinearLayout>
-</com.zhy.autolayout.AutoLinearLayout>
+        </autolayout.AutoLinearLayout>
+    </autolayout.AutoLinearLayout>
+</autolayout.AutoLinearLayout>

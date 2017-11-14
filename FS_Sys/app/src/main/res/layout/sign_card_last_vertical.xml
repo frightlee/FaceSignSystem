@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="1152px"
     android:background="@color/back_blue">
 
-    <com.zhy.autolayout.AutoRelativeLayout
+    <autolayout.AutoRelativeLayout
         android:layout_width="773px"
         android:layout_height="902.4px"
         android:background="@color/white"
@@ -19,7 +19,7 @@
             android:src="@mipmap/liantong"
             android:layout_centerHorizontal="true" />
 
-        <com.zhy.autolayout.AutoLinearLayout
+        <autolayout.AutoLinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/img_head"
@@ -58,6 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20px"
                 android:text="摄像机：A1"
+                android:visibility="gone"
                 android:textColor="@color/black"
                 android:textSize="40px" />
 
@@ -69,6 +70,6 @@
                 android:text="签到时间：2017/10/19　08:23:52"
                 android:textColor="@color/black"
                 android:textSize="40px" />
-        </com.zhy.autolayout.AutoLinearLayout>
-    </com.zhy.autolayout.AutoRelativeLayout>
-</com.zhy.autolayout.AutoRelativeLayout>
+        </autolayout.AutoLinearLayout>
+    </autolayout.AutoRelativeLayout>
+</autolayout.AutoRelativeLayout>
