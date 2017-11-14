@@ -155,9 +155,12 @@ public class DBUtils {
         return -1;
     }
 
-    //传入证件号单独查询是否为黑名单
+//    传入证件号单独查询是否为黑名单
     public static int isBlack(String idNumber) {
         ChildOfWorkersTable cowt = null;
+        if(TextUtils.isEmpty(idNumber)){
+            return ERROR;
+        }
         try {
             cowt = App.db.selector(ChildOfWorkersTable.class).where("w_cardnumber", "=", idNumber).findFirst();
             if (cowt.getFlag() == 2) {

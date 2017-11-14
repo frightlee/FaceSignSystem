@@ -42,7 +42,25 @@ public class JsonUtils {
         }
         return jsonStr + "]";
     }
+    public static String getCamerasJson(List<CameraInfo> list) {
+        String jsonStr = "[";
+        for (CameraInfo s : list) {
+            if (list.indexOf(s) == 0) {
+                jsonStr += "{";
+            } else {
+                jsonStr += ",{";
+            }
+            jsonStr += "\"No_\":\"" + s.getNo_() + "\"";
+            jsonStr += ",\"Alias\":\"" + s.getAlias() + "\"";
+            jsonStr += ",\"IP\":\"" + s.getIP() + "\"";
+            jsonStr += ",\"Port\":\"" + s.getPort() + "\"";
+            jsonStr += ",\"User\":\"" + s.getUser() + "\"";
+            jsonStr += ",\"Pwd\":\"" + s.getPwd() + "\"";
 
+            jsonStr += "}";
+        }
+        return jsonStr + "]";
+    }
     public static List<CameraInfo> getCameras(List<CameraInfo> cameras, String cameraStr) {
         try {
             JSONArray ja = new JSONArray(cameraStr);

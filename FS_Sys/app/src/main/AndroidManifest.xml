@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".CtrlActivity" />
-        <service android:name=".services.MyService"/>
+        <!--<service android:name=".services.MyService"/>-->
     </application>
 
 </manifest>

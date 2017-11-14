@@ -24,16 +24,16 @@
 
             <Button
                 android:id="@+id/btn_add"
-                android:layout_width="68px"
-                android:layout_height="68px"
+                android:layout_width="38px"
+                android:layout_height="38px"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="11px"
                 android:background="@mipmap/tianjia" />
 
             <Button
                 android:id="@+id/btn_set"
-                android:layout_width="68px"
-                android:layout_height="68px"
+                android:layout_width="38px"
+                android:layout_height="38px"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="11px"

@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
     private int screenOritation = SCREEN_HORIZONTAL;
 
+    @ViewInject(R.id.btn_more)
+    private Button btnMore;
     @ViewInject(R.id.rcv_sign)
     private RecyclerView recyclerView1;
     @ViewInject(R.id.layout_left)
@@ -79,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     private CameraCardAdapter cameraAdapter;
     private SignCardAdapter signAdapter;
     private SoundPool soundPool;
-    private Intent serviceIntent;
+//    private Intent serviceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
         cameras = JsonUtils.getCameras(cameras, cameraStr);
         initHCNetSDK();
 
-        serviceIntent = new Intent(this, MyService.class);
-        startService(serviceIntent);
+//        serviceIntent = new Intent(this, MyService.class);
+//        startService(serviceIntent);
     }
 
     private void initViews() {
@@ -166,6 +169,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         recyclerView1.setLayoutManager(lmanager);
+
+        if(layoutLeft.getVisibility() == View.VISIBLE){
+            btnMore.setAlpha(0.4f);
+        }else {
+            btnMore.setAlpha(1.0f);
+        }
     }
 
     private void initHCNetSDK() {
@@ -415,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
     private void saveCamera() {
         SharedPreferences sp = getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        String cameraList = JsonUtils.toJsonString(cameras);
+        String cameraList = JsonUtils.getCamerasJson(cameras);
         editor.putString("cameras", cameraList);
         editor.apply();
     }
@@ -499,7 +508,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "注销登录失败");
                 }
         }
-
-        stopService(serviceIntent);
+//        stopService(serviceIntent);
     }
 }

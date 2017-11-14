@@ -27,8 +27,8 @@ public class MyService extends Service {
 //                long currenttime = System.currentTimeMillis();
                 Calendar c = Calendar.getInstance();
                 int hour = c.get(Calendar.HOUR_OF_DAY);
-                int minute = c.get(Calendar.MINUTE);
-                if (hour == 12 && minute == 0)
+//				  int minute = c.get(Calendar.MINUTE);
+                if (hour == 12 /*&& minute == 0*/)
                     doCheckBackUp(c);
                 try {
                     thread.sleep(60 * 60 * 1000);
