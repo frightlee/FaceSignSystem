@@ -6,18 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import com.zhy.autolayout.utils.AutoUtils;
-
-import org.w3c.dom.Text;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
+import autolayout.utils.AutoUtils;
 import facesign.adplayer.fanhong.fs_sys.R;
 import facesign.adplayer.fanhong.fs_sys.models.CameraInfo;
 
