@@ -65,16 +65,16 @@ public class InputWorkers {
                     // 获取每一行的单元格
                     cells[0] = sheet.getCell(0, j);// （列，行）
                     cells[1] = sheet.getCell(1, j);
-                    InputWorkersModel model = new InputWorkersModel();
+                    if (cells[0].getContents().equals("")) {
+                        break;
+                    }
+					InputWorkersModel model = new InputWorkersModel();
                     model.setDepartment("——");
                     model.setPosition("——");
                     model.setCardNumber(cells[0].getContents());
                     model.setName(cells[1].getContents());
                     model.setFalg(2);
                     list.add(model);
-                    if (cells[0].getContents().equals("")) {
-                        break;
-                    }
                     j++;
                 }
             } catch (IOException e) {

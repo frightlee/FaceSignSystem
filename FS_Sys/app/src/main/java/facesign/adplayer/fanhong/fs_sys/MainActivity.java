@@ -18,6 +18,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -30,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hikvision.netsdk.ExceptionCallBack;
 import com.hikvision.netsdk.HCNetSDK;
@@ -37,8 +39,6 @@ import com.hikvision.netsdk.NET_DVR_DEVICEINFO_V30;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.ByteByReference;
 
-import org.xutils.common.Callback;
-import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
@@ -52,6 +52,7 @@ import autolayout.config.AutoLayoutConifg;
 import facesign.adplayer.fanhong.fs_sys.adapers.SignCardAdapter;
 import facesign.adplayer.fanhong.fs_sys.models.CameraInfo;
 import facesign.adplayer.fanhong.fs_sys.utils.CameraCardAdapter;
+import facesign.adplayer.fanhong.fs_sys.utils.DBUtils;
 import facesign.adplayer.fanhong.fs_sys.utils.HCTimeUtils;
 import facesign.adplayer.fanhong.fs_sys.utils.JsonUtils;
 import jna.HCNetSDKByJNA;
@@ -165,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         });
         recyclerView1.setLayoutManager(lmanager);
 
-        AlphaAnimation anim = new AlphaAnimation(0.0f, 0.5f);
+        AlphaAnimation anim = new AlphaAnimation(0.0f, 0.7f);
         anim.setDuration(2000);
         anim.setRepeatMode(AlphaAnimation.REVERSE);
         anim.setRepeatCount(AlphaAnimation.INFINITE);
@@ -270,12 +271,17 @@ public class MainActivity extends AppCompatActivity {
         return hcalarm;
     }
 
-    //    private List<Long> vt = new ArrayList<>();
     private HCNetSDKByJNA.FMSGCallBack msgCallback = new HCNetSDKByJNA.FMSGCallBack() {
 
         @Override
-        public void invoke(int lCommand, HCNetSDKByJNA.NET_DVR_ALARMER pAlarmer, Pointer pAlarmInfo, int dwBufLen, Pointer pUser) {
+        public void invoke(final int lCommand, final HCNetSDKByJNA.NET_DVR_ALARMER pAlarmer, Pointer pAlarmInfo, int dwBufLen, Pointer pUser) {
             Log.e(TAG, "msg:lCommand=" + lCommand + "\npAlarmer:" + pAlarmer);
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//            Toast.makeText(MainActivity.this, "msg:lCommand=" + lCommand + "\npAlarmer:" + pAlarmer, Toast.LENGTH_LONG).show();
+//                }
+//            });
             if (lCommand == HCNetSDKByJNA.COMM_SNAP_MATCH_ALARM)//人脸黑名单比对结果信息pAlarmInfo
             {
                 HCNetSDKByJNA.NET_VCA_FACESNAP_MATCH_ALARM alarmInfo = new HCNetSDKByJNA.NET_VCA_FACESNAP_MATCH_ALARM(pAlarmInfo);
@@ -307,65 +313,25 @@ public class MainActivity extends AppCompatActivity {
                     if (HCTimeUtils.inXSeconds(absTime, App.lastTime, 5))
                         return;
 
-//                vt.add(System.currentTimeMillis());
-                RequestParams params = new RequestParams(App.SAVEURL);
-                params.addParameter("uid", uid);//证件号
-                params.addParameter("_No", devNo_);//摄像机编号
-                params.addParameter("alias", CameraInfo.findNameByNo_(cameras, devNo_));//摄像机别名
-                params.addParameter("date", HCTimeUtils.getDateTime(absTime, 1));//年-月-日
-                params.addParameter("time", HCTimeUtils.getDateTime(absTime, 2));//时:分:秒
-                x.http().post(params, new Callback.CommonCallback<String>() {
-                    @Override
-                    public void onSuccess(String result) {
-//                        vt.add(System.currentTimeMillis());
-                        Log.e(TAG, "json=" + result);
-                        int r = Integer.parseInt(JsonUtils.getJsonValue(result, "result"));
-                        switch (r) {
-                            case 1:
-                                String data = JsonUtils.getJsonValue(result, "data");
-                                String department = JsonUtils.getJsonValue(data, "department");
-                                String position = JsonUtils.getJsonValue(data, "position");
-                                SignCardAdapter.SignCard signCard = new SignCardAdapter.SignCard(card.bitmap, card.name, department, position, card.alias, card.time);
-                                signCards.add(0, signCard);
-                                soundPool.play(2, 1, 1, 1, 0, 1);
-                                if (signCards.size() > 6) {
-                                    for (int i = 6; i < signCards.size(); i++) {
-                                        signCards.remove(i);
-                                    }
-                                }
-                                Log.e(TAG, signCards.get(0).toString());
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-//                                        showTimeSpend("white", absTime);
-                                        signAdapter.notifyDataSetChanged();
-                                    }
-                                });
-                                break;
-                            case 2:
-                                if (App.blackAlarm) {
-//                                    showTimeSpend("black", absTime);
-                                    alarmBlack(card.bitmap, card.name, card.uid, card.alias, card.time);
-                                }
-                                break;
+                if (DBUtils.isBlack(uid) == DBUtils.NORMAL) {//仅对数据库中的白名单用户执行以下操作
+                    String[] pos = DBUtils.triggerCard(MainActivity.this, uid, absTime);
+                    signCards.add(0, new SignCardAdapter.SignCard(blackBitmap, name, pos[0], pos[1], CameraInfo.findNameByNo_(cameras, devNo_), HCTimeUtils.getTimeStr(absTime)));
+
+                    soundPool.play(2, 1, 1, 1, 0, 1);
+                    if (signCards.size() > 6) {
+                        for (int i = 6; i < signCards.size(); i++) {
+                            signCards.remove(i);
                         }
                     }
+                    Log.e(TAG, signCards.get(0).toString());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            signAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
 
-                    @Override
-                    public void onError(Throwable ex, boolean isOnCallback) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(CancelledException cex) {
-
-                    }
-
-                    @Override
-                    public void onFinished() {
-
-                    }
-                });
                 App.lastUid = uid;
                 App.lastTime = absTime;
             }
@@ -493,7 +459,7 @@ public class MainActivity extends AppCompatActivity {
     private void saveCamera() {
         SharedPreferences sp = getSharedPreferences(App.SP_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        String cameraList = JsonUtils.toJsonString(cameras);
+        String cameraList = JsonUtils.getCamerasJson(cameras);
         editor.putString("cameras", cameraList);
         editor.apply();
     }
@@ -568,5 +534,23 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "注销登录失败");
                 }
         }
+    }
+
+    long time1, time2;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        time2 = System.currentTimeMillis();
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (time2 - time1 > 1500) {
+                Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                time1 = time2;
+                return true;
+            } else {
+                finish();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
